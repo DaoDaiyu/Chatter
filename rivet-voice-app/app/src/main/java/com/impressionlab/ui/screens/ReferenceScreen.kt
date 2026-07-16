@@ -18,6 +18,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -39,10 +41,13 @@ import androidx.compose.material.icons.rounded.GraphicEq
 import androidx.compose.material.icons.rounded.Mic
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.Sell
 import androidx.compose.material.icons.rounded.Stop
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -60,6 +65,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -75,9 +81,14 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.impressionlab.audio.AttemptRecorder
 import com.impressionlab.audio.AudioPlayer
+import com.impressionlab.data.TagStore
 import com.impressionlab.data.VoiceRepo
 import com.impressionlab.ui.components.ConfirmDialog
 import com.impressionlab.ui.components.GlassCard
+import com.impressionlab.ui.components.NameDialog
+import com.impressionlab.ui.components.TagDot
+import com.impressionlab.ui.components.TagEditDialog
+import com.impressionlab.ui.components.TagPill
 import com.impressionlab.ui.components.formatMs
 import java.io.File
 import java.text.SimpleDateFormat
@@ -89,7 +100,8 @@ import kotlinx.coroutines.withContext
 
 /**
  * The practice space for a single reference voice line:
- * play the reference, record auto-named attempts, re-listen, and keep notes.
+ * play the reference, record auto-named attempts, tag what each attempt was
+ * drilling, re-listen, filter by tag, and keep notes.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -117,7 +129,25 @@ fun ReferenceScreen(
 
     var refresh by remember { mutableIntStateOf(0) }
     val attempts = remember(refresh) { VoiceRepo.attempts(referenceDir) }
+    val tagMap = remember(refresh) { TagStore.readAll(referenceDir) }
     var attemptToDelete by remember { mutableStateOf<File?>(null) }
+    var attemptToTag by remember { mutableStateOf<File?>(null) }
+
+    // Tags: global list, the drill selection applied to new recordings, and the list filter.
+    var globalTags by remember { mutableStateOf(TagStore.globalTags(context)) }
+    val drillTags = remember { mutableStateListOf<String>() }
+    var filterTag by remember { mutableStateOf<String?>(null) }
+    var showNewTagDialog by remember { mutableStateOf(false) }
+
+    val usedTags = remember(refresh, globalTags) {
+        val used = tagMap.values.flatten().toSet()
+        globalTags.filter { it in used } + (used - globalTags.toSet())
+    }
+    val visibleAttempts = if (filterTag == null) {
+        attempts
+    } else {
+        attempts.filter { tagMap[it.name]?.contains(filterTag) == true }
+    }
 
     var notes by remember { mutableStateOf(VoiceRepo.readNotes(referenceDir)) }
     LaunchedEffect(notes) {
@@ -136,7 +166,10 @@ fun ReferenceScreen(
 
     fun toggleRecord() {
         if (recorder.isRecording) {
-            recorder.stop()
+            val file = recorder.stop()
+            if (file != null && drillTags.isNotEmpty()) {
+                TagStore.setTags(referenceDir, file.name, drillTags.toList())
+            }
             refresh++
         } else {
             val granted = ContextCompat.checkSelfPermission(
@@ -160,7 +193,16 @@ fun ReferenceScreen(
             )
         },
         bottomBar = {
-            RecordBar(recorder = recorder, onToggle = ::toggleRecord)
+            RecordBar(
+                recorder = recorder,
+                allTags = globalTags,
+                selectedTags = drillTags,
+                onToggleTag = { tag ->
+                    if (tag in drillTags) drillTags.remove(tag) else drillTags.add(tag)
+                },
+                onNewTag = { showNewTagDialog = true },
+                onToggle = ::toggleRecord,
+            )
         },
     ) { padding ->
         LazyColumn(
@@ -186,27 +228,61 @@ fun ReferenceScreen(
                         modifier = Modifier.weight(1f),
                     )
                     Text(
-                        "${attempts.size}",
+                        "${visibleAttempts.size}",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
                     )
                 }
             }
+            if (usedTags.isNotEmpty()) {
+                item(key = "tagFilter") {
+                    Row(
+                        Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        FilterChip(
+                            selected = filterTag == null,
+                            onClick = { filterTag = null },
+                            label = { Text("All") },
+                        )
+                        usedTags.forEach { tag ->
+                            FilterChip(
+                                selected = filterTag == tag,
+                                onClick = { filterTag = if (filterTag == tag) null else tag },
+                                label = { Text(tag) },
+                                leadingIcon = { TagDot(tag) },
+                            )
+                        }
+                    }
+                }
+            }
             if (attempts.isEmpty()) {
                 item(key = "noAttempts") {
                     Text(
-                        "No attempts yet — hit the mic button below, do your best Rivet, and it will appear here automatically.",
+                        "No attempts yet — pick what you're drilling below, hit the mic, and your take appears here automatically.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
+                    )
+                }
+            } else if (visibleAttempts.isEmpty()) {
+                item(key = "noFiltered") {
+                    Text(
+                        "No attempts with the “$filterTag” tag yet.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
                     )
                 }
             }
-            items(attempts, key = { it.name }) { file ->
+            items(visibleAttempts, key = { it.name }) { file ->
                 AttemptRow(
                     file = file,
                     player = player,
+                    tags = tagMap[file.name].orEmpty(),
+                    onEditTags = { attemptToTag = file },
                     onDelete = { attemptToDelete = file },
                 )
             }
@@ -220,10 +296,39 @@ fun ReferenceScreen(
             onConfirm = {
                 if (player.isCurrent(file)) player.stop()
                 file.delete()
+                TagStore.removeEntry(referenceDir, file.name)
                 refresh++
                 attemptToDelete = null
             },
             onDismiss = { attemptToDelete = null },
+        )
+    }
+
+    attemptToTag?.let { file ->
+        TagEditDialog(
+            title = "Tags — Attempt ${VoiceRepo.attemptNumber(file)}",
+            allTags = globalTags,
+            initial = tagMap[file.name].orEmpty(),
+            onAddTag = { globalTags = TagStore.addGlobalTag(context, it) },
+            onDismiss = { attemptToTag = null },
+            onConfirm = { tags ->
+                TagStore.setTags(referenceDir, file.name, tags)
+                attemptToTag = null
+                refresh++
+            },
+        )
+    }
+
+    if (showNewTagDialog) {
+        NameDialog(
+            title = "New tag",
+            placeholder = "e.g. Inflection",
+            confirmLabel = "Add",
+            onDismiss = { showNewTagDialog = false },
+            onConfirm = { name ->
+                globalTags = TagStore.addGlobalTag(context, name)
+                showNewTagDialog = false
+            },
         )
     }
 }
@@ -375,7 +480,13 @@ private fun NotesCard(notes: String, onNotesChange: (String) -> Unit) {
 }
 
 @Composable
-private fun AttemptRow(file: File, player: AudioPlayer, onDelete: () -> Unit) {
+private fun AttemptRow(
+    file: File,
+    player: AudioPlayer,
+    tags: List<String>,
+    onEditTags: () -> Unit,
+    onDelete: () -> Unit,
+) {
     val playing = player.isPlayingFile(file)
     val dateLabel = remember(file) {
         SimpleDateFormat("MMM d, HH:mm", Locale.getDefault()).format(Date(file.lastModified()))
@@ -403,6 +514,21 @@ private fun AttemptRow(file: File, player: AudioPlayer, onDelete: () -> Unit) {
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                if (tags.isNotEmpty()) {
+                    Row(
+                        Modifier.padding(top = 6.dp).horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        tags.forEach { TagPill(it) }
+                    }
+                }
+            }
+            IconButton(onClick = onEditTags) {
+                Icon(
+                    Icons.Rounded.Sell,
+                    contentDescription = "Edit tags",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
             IconButton(onClick = onDelete) {
                 Icon(
@@ -416,7 +542,14 @@ private fun AttemptRow(file: File, player: AudioPlayer, onDelete: () -> Unit) {
 }
 
 @Composable
-private fun RecordBar(recorder: AttemptRecorder, onToggle: () -> Unit) {
+private fun RecordBar(
+    recorder: AttemptRecorder,
+    allTags: List<String>,
+    selectedTags: List<String>,
+    onToggleTag: (String) -> Unit,
+    onNewTag: () -> Unit,
+    onToggle: () -> Unit,
+) {
     val colors = MaterialTheme.colorScheme
 
     // Live mic amplitude drives the button pulse while recording.
@@ -459,6 +592,36 @@ private fun RecordBar(recorder: AttemptRecorder, onToggle: () -> Unit) {
             .padding(bottom = 10.dp, top = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        // Drill focus: tags applied automatically to the next recording.
+        AnimatedVisibility(
+            visible = !recorder.isRecording,
+            enter = fadeIn(),
+            exit = fadeOut(),
+        ) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    "Drill:",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = colors.onSurfaceVariant,
+                )
+                allTags.forEach { tag ->
+                    FilterChip(
+                        selected = tag in selectedTags,
+                        onClick = { onToggleTag(tag) },
+                        label = { Text(tag) },
+                        leadingIcon = { TagDot(tag) },
+                    )
+                }
+                AssistChip(onClick = onNewTag, label = { Text("+ New") })
+            }
+        }
         AnimatedVisibility(
             visible = recorder.isRecording,
             enter = fadeIn(),
@@ -472,7 +635,7 @@ private fun RecordBar(recorder: AttemptRecorder, onToggle: () -> Unit) {
                 modifier = Modifier.padding(bottom = 6.dp),
             )
         }
-        Box(contentAlignment = Alignment.Center) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(top = 8.dp)) {
             if (recorder.isRecording) {
                 Box(
                     Modifier
@@ -507,7 +670,11 @@ private fun RecordBar(recorder: AttemptRecorder, onToggle: () -> Unit) {
             }
         }
         Text(
-            if (recorder.isRecording) "Tap to stop" else "Tap to record an attempt",
+            when {
+                recorder.isRecording -> "Tap to stop"
+                selectedTags.isEmpty() -> "Tap to record an attempt"
+                else -> "Next attempt tagged: ${selectedTags.joinToString(", ")}"
+            },
             style = MaterialTheme.typography.bodySmall,
             color = colors.onSurfaceVariant,
             modifier = Modifier.padding(top = 8.dp),

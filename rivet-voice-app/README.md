@@ -21,6 +21,10 @@ Character (e.g. "Rivet")
 - **Practice screen** — play/scrub the reference, hit the big mic button to record an
   attempt (auto-named and numbered), re-listen to any attempt, and keep improvement
   notes that save as you type.
+- **Drill tags** — pick what you're practicing (Shadow, Hum, Attack, Rhythm, Pitch,
+  Resonance, Full take, Improv, or your own custom tags) before recording and the
+  attempt is tagged automatically; edit tags on any attempt later and filter the
+  attempts list by tag. Tags live in a `tags.json` sidecar per voice line.
 
 ## Sleek bits
 
