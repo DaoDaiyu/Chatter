@@ -16,10 +16,21 @@ android {
         versionName = "1.0"
     }
 
+    signingConfigs {
+        // Convenience key for personal sideloading — intentionally committed, not a secret.
+        create("shared") {
+            storeFile = rootProject.file("signing/release.keystore")
+            storePassword = "impressionlab"
+            keyAlias = "impressionlab"
+            keyPassword = "impressionlab"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("shared")
         }
     }
 
