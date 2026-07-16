@@ -40,7 +40,7 @@ class SettingsState(private val context: Context) {
         prefs.edit().putString(KEY_PALETTE, name).apply()
     }
 
-    fun setDarkMode(mode: String) {
+    fun updateDarkMode(mode: String) {
         darkMode = mode
         prefs.edit().putString(KEY_DARK, mode).apply()
     }

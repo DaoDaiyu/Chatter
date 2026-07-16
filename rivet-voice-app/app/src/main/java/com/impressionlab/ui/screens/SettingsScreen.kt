@@ -166,7 +166,7 @@ private fun SectionLabel(text: String) {
 private fun DarkModeChip(settings: SettingsState, mode: String, label: String) {
     FilterChip(
         selected = settings.darkMode == mode,
-        onClick = { settings.setDarkMode(mode) },
+        onClick = { settings.updateDarkMode(mode) },
         label = { Text(label) },
     )
 }
