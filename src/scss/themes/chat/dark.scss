@@ -1,0 +1,22 @@
+@import '../../functions';
+@import 'bootstrap/scss/functions';
+@import '../variables/dark_variables';
+@import 'bootstrap/scss/variables';
+@import '../../flist_derived';
+@import '../variables/dark_derived';
+
+// Apply variables to theme.
+@import '../chat';
+
+.colorblindMode {
+  @import '../colorblind';
+  @import '../../rising';
+
+  @each $varName, $value in $risingVariables {
+    --#{$varName}: #{$value};
+  }
+}
+
+:root {
+  color-scheme: dark;
+}

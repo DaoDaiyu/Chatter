@@ -1,0 +1,24 @@
+// Makes the main chat panels translucent + blurred over a custom
+// background instead of opaque, using CSS vars set by platform/theme.ts.
+// Defaults (opacity 1, blur 0) make this a no-op when no background is
+// set, so it's safe to load unconditionally.
+:root {
+  --horizon-overlay-opacity: 0;
+  --horizon-panel-opacity: 1;
+  --horizon-panel-blur: 0px;
+}
+
+// Confirmed real selectors from chat/ChatView.vue, chat/Sidebar.vue —
+// extend this list as you find more panels that should show the
+// background through them (Logs.vue, SettingsView.vue, etc).
+// NOTE: rgba(30,30,30, ...) below is a dark-theme approximation, not
+// pulled from Horizon's actual active theme (scss/themes/*.scss defines
+// several). If you use a light theme, swap this to a CSS var the theme
+// files set, e.g. --bs-body-bg, so translucency tracks the real theme.
+#chatView,
+.sidebar-wrapper .body,
+#sidebarUserInfo {
+  background-color: rgba(30, 30, 30, var(--horizon-panel-opacity));
+  backdrop-filter: blur(var(--horizon-panel-blur));
+  -webkit-backdrop-filter: blur(var(--horizon-panel-blur));
+}

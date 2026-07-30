@@ -1,0 +1,250 @@
+@use 'sass:color';
+@import 'bootstrap/scss/functions';
+@import '../../functions';
+@import '../variables/peached_variables';
+@import 'bootstrap/scss/variables';
+@import '../../flist_derived';
+@import '../variables/light_derived';
+
+$bookmark-color: color.scale($green-color, $lightness: 10%);
+// Apply variables to theme.
+@import '../chat';
+
+body,
+.modal-body {
+  background: #eeaeca;
+  background: linear-gradient(
+    343deg,
+    rgba(238, 174, 202, 1) 0%,
+    rgba(235, 203, 178, 1) 52%,
+    rgba(245, 235, 235, 1) 100%
+  );
+}
+
+.list-group.conversation-nav
+  .list-group-item-action.item-private.active
+  .online-status {
+  color: color-contrast($primary);
+}
+
+.sidebar {
+  --sidebar-alpha: 1;
+  background-color: rgba($body-bg, var(--sidebar-alpha));
+
+  @media (min-width: breakpoint-min(md)) {
+    & {
+      --sidebar-alpha: 0.4;
+    }
+  }
+}
+
+.modal-body,
+.card {
+  .form-control:not(.btn) {
+    background-color: $white;
+  }
+}
+
+.message-own:not(.message-warn) {
+  background-color: rgba($gray-300, 0.5);
+}
+#window-tabs .nav-tabs .nav-link.active {
+  background-color: #efddd6;
+  border-bottom-color: #efddd6;
+}
+* {
+  &::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 2px color.scale($gray-base, $lightness: -50%);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: color.scale($gray-base, $lightness: -30%);
+    &:hover {
+      background-color: color.scale($gray-base, $lightness: -50%);
+    }
+  }
+}
+
+.character-card-header {
+  background: $body-bg !important;
+}
+
+// Custom muted warning/danger colors
+$warning-bg-subtle-custom: mix($warning, $white, 55%);
+$danger-bg-subtle-custom: mix($danger, $white, 55%);
+
+:root {
+  --bs-warning-bg-subtle: #{$warning-bg-subtle-custom};
+  --bs-danger-bg-subtle: #{$danger-bg-subtle-custom};
+}
+
+@each $color, $value in $theme-colors {
+  .list-group-item-action.list-group-item-#{$color} {
+    color: var(--bs-#{$color}-text-emphasis);
+    background-color: var(--bs-#{$color}-bg-subtle);
+
+    &:hover,
+    &:focus {
+      color: var(--bs-#{$color}-text-emphasis);
+      background-color: color-mix(
+        in srgb,
+        var(--bs-#{$color}-bg-subtle) 95%,
+        $black
+      );
+    }
+  }
+}
+
+.quick-jump-result.selected {
+  color: #fff;
+}
+
+$genders: (
+  'shemale': #6f2dbd,
+  'herm': #721817,
+  'none': #18314f,
+  'female': $pink-color,
+  'male': #3e78b2,
+  'male-herm': #2094a9,
+  'transgender': #f06543,
+  'cunt-boy': $green-color
+);
+@each $gender, $color in $genders {
+  .gender-#{$gender},
+  .gender-icon-#{$gender} {
+    --gender-color: #{$color};
+  }
+
+  .gender-icon-#{$gender},
+  .message-event .gender-icon-#{gender} {
+    color: var(--gender-color);
+  }
+
+  .message-event .gender-#{$gender} {
+    --gender-color: #{color.scale($color, $lightness: 5%)};
+  }
+}
+
+.message-highlight {
+  .blueText,
+  .blueNameText,
+  .gender-male {
+    color: #052d53;
+  }
+  .grayText,
+  .grayNameText,
+  .whiteText,
+  .whiteNameText {
+    color: #312f2f;
+  }
+
+  .yellowText,
+  .yellowNameText {
+    color: #6f6406;
+  }
+
+  .orangeText,
+  .orangeNameText,
+  .gender-transgender {
+    color: #833609;
+  }
+
+  .brownText,
+  .brownNameText {
+    color: #531b00;
+  }
+
+  .cyanText,
+  .cyanNameText,
+  .gender-male-herm {
+    color: #053e3e;
+  }
+}
+
+.message-own {
+  .yellowText,
+  .yellowNameText {
+    color: #fff6ac;
+  }
+}
+
+.message-warn {
+  .pinkText,
+  .pinkNameText,
+  .gender-female {
+    color: #f897c7;
+  }
+
+  .whiteText,
+  .whiteNameText {
+    color: $white;
+  }
+
+  .brownText,
+  .brownNameText {
+    color: #040200;
+  }
+
+  .blueText,
+  .blueNameText,
+  .gender-male {
+    color: #b1d9ff;
+  }
+
+  .yellowText,
+  .yellowNameText {
+    color: #fff6ac;
+  }
+
+  .greenText,
+  .greenNameText,
+  .gender-cunt-boy {
+    color: #9bffa7;
+  }
+
+  .redText,
+  .redNameText,
+  .gender-herm {
+    color: #f9d5c8;
+  }
+
+  .orangeText,
+  .orangeNameText,
+  .brownNameText,
+  .brownText,
+  .gender-transgender {
+    color: #ffdbc6;
+  }
+
+  .purpleText,
+  .purpleNameText,
+  .gender-shemale {
+    color: #e0c8e5;
+  }
+  .blackText,
+  .blackNameText,
+  .grayText,
+  .grayNameText,
+  .gender-none {
+    color: #fff;
+  }
+
+  .cyanText,
+  .cyanNameText,
+  .gender-male-herm {
+    color: #a8dede;
+  }
+}
+
+.colorblindMode {
+  @import '../colorblind';
+  @import '../../rising';
+
+  @each $varName, $value in $risingVariables {
+    --#{$varName}: #{$value};
+  }
+}
+
+:root {
+  color-scheme: light;
+}

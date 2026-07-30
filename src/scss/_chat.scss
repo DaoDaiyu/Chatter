@@ -1,0 +1,763 @@
+@use 'sass:color';
+:root {
+  --message-bg: none;
+}
+
+$bookmark-color: #66cc33 !default;
+// Global contrast overrides for active states
+.list-group-item.active,
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link,
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:active {
+  color: color-yiq($primary);
+}
+
+.bg-solid-text {
+  background: $text-background-color;
+}
+
+.link-preview {
+  background: $text-background-color;
+  border-top-right-radius: 2px;
+  bottom: 0;
+  left: 0;
+  max-width: 40%;
+  overflow-x: hidden;
+  padding: 0.2em 0.5em;
+  font-size: 12px;
+  position: fixed;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  z-index: 100000;
+
+  &.right {
+    left: auto;
+    right: 0;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 0;
+  }
+}
+
+.has-new {
+  background-color: mix($black, $danger, 4 * 8%) !important;
+}
+@keyframes throb {
+  0% {
+    background-color: $body-bg;
+  }
+  65% {
+    background-color: $gray-200;
+  }
+  100% {
+    background-color: $body-bg;
+  }
+}
+.throbber {
+  animation: throb 2s infinite;
+}
+
+.overlay-disable {
+  position: absolute;
+  opacity: 0.8;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  background: #ddd;
+  color: #000;
+}
+
+.sidebar-wrapper {
+  .modal-backdrop {
+    display: none;
+    z-index: 9;
+  }
+
+  &.open {
+    z-index: 11;
+    .modal-backdrop {
+      display: block;
+    }
+    .body {
+      display: block;
+    }
+  }
+}
+
+.sidebar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: $body-bg;
+  z-index: 10;
+  flex-shrink: 0;
+  padding: 0px 0px 10px 0px;
+
+  .body {
+    height: 100%;
+    display: none;
+    position: relative;
+    min-width: 210px;
+    max-width: 350px;
+    width: 210px;
+    flex-direction: column;
+    overflow: auto;
+  }
+  .resize-handle {
+    position: absolute;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    cursor: ew-resize;
+    z-index: 10;
+    opacity: 0;
+    background-color: $gray-200;
+  }
+  .resize-handle:hover {
+    opacity: 0.5;
+  }
+  .resize-handle-left {
+    left: 0;
+  }
+  .resize-handle-right {
+    right: 0;
+  }
+  .expander {
+    display: block;
+    position: absolute;
+    padding: 3px 4px;
+    border-color: theme-color('secondary');
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    white-space: nowrap;
+    @media (min-width: breakpoint-min(sm)) {
+      .name {
+        display: none;
+      }
+
+      &:hover .name {
+        display: inline;
+      }
+    }
+  }
+
+  &.sidebar-left {
+    border-right: solid 1px $card-border-color;
+    left: 0;
+    margin-right: 0;
+    padding-right: 0;
+    & .body {
+      padding-left: 10px;
+    }
+
+    .expander {
+      transform: rotate(270deg) translate3d(0, 0, 0);
+      transform-origin: 100% 0;
+      -webkit-transform: rotate(270deg) translate3d(0, 0, 0);
+      -webkit-transform-origin: 100% 0;
+      right: 0;
+    }
+  }
+
+  &.sidebar-right {
+    border-left: solid 1px $card-border-color;
+    right: 0;
+    margin-left: 0;
+    padding-left: 0;
+    & .body {
+      padding-right: 10px;
+    }
+
+    .expander {
+      transform: rotate(90deg) translate3d(0, 0, 0);
+      transform-origin: 0 0;
+      -webkit-transform: rotate(90deg) translate3d(0, 0, 0);
+      -webkit-transform-origin: 0 0;
+    }
+  }
+
+  #sidebarUserInfo {
+    border-bottom: solid 1px $card-border-color;
+  }
+}
+
+@mixin sidebar-fixed() {
+  position: static;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  .body {
+    display: block;
+  }
+  .expander {
+    display: none;
+  }
+}
+
+.chat-text-box {
+  min-height: initial !important;
+  max-height: 250px;
+  resize: none;
+  @media (max-height: 600px) {
+    max-height: 150px;
+  }
+}
+#userInfo-avatar {
+  object-fit: contain;
+}
+.user-avatar {
+  object-fit: contain;
+}
+.userInfo-buttons-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  .userInfo-button-item {
+    --bs-btn-border-width: 0px;
+    color: var(--bs-link-color);
+    flex: 1 1 0;
+    padding: 5px 0px;
+    min-width: 40px;
+    font-size: 1.25rem;
+    --bs-btn-hover-bg: var(--bs-secondary-bg);
+    &.btn-outline-success {
+      color: var(--bs-success);
+      &:hover {
+        color: var(--bs-success-text-emphasis);
+      }
+    }
+    transition: $transition-base;
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+    position: relative;
+    .userInfo-pager-text {
+      font-size: 1rem;
+      color: var(--gray-dark);
+    }
+    .adControls {
+      position: absolute;
+      color: var(--bs-danger);
+      z-index: 12;
+      top: 0px;
+      right: 2px;
+      font-size: 1rem;
+      &:hover {
+        color: var(--bs-danger-text-emphasis);
+      }
+    }
+  }
+
+  .userInfo-button-item.userInfo-pager-button {
+    gap: 0.35rem;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 3px !important;
+
+    .badge {
+      display: none;
+      margin-left: 0;
+      font-size: 0.75rem;
+      vertical-align: middle;
+      pointer-events: none;
+    }
+
+    &:hover .dismiss {
+      opacity: 0.6;
+    }
+
+    .dismiss {
+      display: none;
+      position: absolute;
+      transition: opacity 0.2s;
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+      opacity: 0;
+      z-index: 12;
+      top: 1px;
+      right: 2px;
+      line-height: 1;
+      font-size: 1rem;
+
+      &:hover {
+        opacity: 1;
+        color: var(--bs-danger-text-emphasis);
+      }
+
+      &.visible {
+        display: block;
+      }
+    }
+
+    &.visible .badge {
+      display: inline-flex;
+    }
+  }
+}
+
+.sidebarUserInfo-user {
+  max-width: 70%;
+  overflow-x: hidden;
+  padding: 0px 5px 6px 5px;
+  border-radius: 8px;
+  transition: $transition-base;
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+  &:hover,
+  &:active {
+    text-decoration: none;
+    background-color: var(--bs-secondary-bg);
+    cursor: pointer;
+  }
+}
+.sidebarUserInfo-name {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  text-overflow: ellipsis;
+
+  font-weight: 600;
+}
+#sidebarUserInfo {
+  padding-bottom: 7px;
+  padding-right: 8px;
+  flex-shrink: 0;
+  .sidebarUserInfo-status {
+    opacity: 0.7;
+  }
+  .sidebarUserInfo-name:hover a,
+  .sidebarUserInfo-status:hover {
+    text-decoration: none;
+    color: var(--black);
+    opacity: 1;
+    transition: $transition-base;
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}
+.ads-text-box,
+.ads-text-box:focus {
+  background-color: mix($white, $info, 4 * 8%);
+}
+
+.border-top {
+  border-top: solid 1px $card-border-color;
+}
+
+.border-bottom {
+  border-bottom: solid 2px $gray-300;
+}
+
+.user-view {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--gender-color);
+}
+
+.userlist-item {
+  color: $text-muted;
+}
+
+.message {
+  word-wrap: break-word;
+  padding-bottom: 1px;
+  padding-left: 5px;
+}
+
+.message-block {
+  padding: 1px 0;
+  border-top: solid 1px $card-border-color;
+}
+
+.message-blockless {
+  padding: 1px 0;
+}
+
+.message-own {
+  background-color: rgba($gray-300, 0.7);
+}
+
+.message-warn {
+  background-color: var(--bs-danger);
+  color: color-contrast($danger);
+  .bbcode {
+    .whiteText,
+    .blackText {
+      color: color-contrast($danger);
+    }
+  }
+  .message-time {
+    background-color: mix($white, $danger, 6 * 8%);
+    color: mix($black, $danger, 10 * 8%);
+  }
+}
+
+.messages {
+  position: relative;
+}
+
+.messages-both {
+  .message-ad:not(.message-score) {
+    background-color: mix($white, $info, 4 * 8%);
+    padding: 0 2px 2px 2px;
+    box-shadow: $gray-500 -2px -2px 2px inset;
+    .message-time {
+      background-color: mix($white, $info, 6 * 8%);
+      color: mix($black, $info, 10 * 8%);
+    }
+  }
+}
+
+.message-event {
+  color: $text-muted;
+}
+
+// search-term highlighting, shared by the log viewer and in-chat find
+.message-search-highlight {
+  background-color: rgba(var(--bs-warning-rgb, 255, 193, 7), 0.45);
+  color: color-contrast($body-bg);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+.message-time {
+  color: $text-dark;
+}
+
+.message-ad {
+  &:not(.expanded) {
+    max-height: 100px;
+    overflow: hidden;
+    position: relative;
+
+    > .expand {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 5px;
+      position: absolute;
+      top: 70px;
+      width: 100%;
+      left: 0;
+      height: 30px;
+      cursor: pointer;
+      background: linear-gradient(rgba($white, 0), $white);
+
+      &:hover {
+        background: linear-gradient(rgba($white, 0) 50%, $white);
+      }
+    }
+  }
+  > .expand {
+    display: none;
+  }
+}
+
+.message-highlight {
+  background-color: color.change(
+    mix($white, $success, 7.5 * 8%),
+    $saturation: 50
+  );
+  .message-time {
+    background-color: mix($white, $success, 6 * 8%);
+    color: mix($black, $success, 10 * 8%);
+  }
+}
+
+.message-action .bbcode {
+  font-style: italic;
+  i,
+  em {
+    font-style: normal;
+  }
+}
+
+.last-read {
+  border-bottom: solid 2px mix($white, $success, 4 * 8%) !important;
+}
+
+.messages .message:last-of-type.last-read {
+  border-bottom: none !important;
+}
+
+.layout-modern {
+  .message.message-modern {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 1px 4px;
+    position: relative;
+    &:not(.message-score) {
+      border-left: solid 2px transparent;
+    }
+    .expanded {
+      max-height: none;
+    }
+    &:hover {
+      /*background-color: rgba($gray-100, 0.7);*/
+      .message-avatar-spacer {
+        .message-time {
+          display: inherit;
+        }
+      }
+    }
+    .message-time {
+      padding: 0px;
+      font-size: 0.7em;
+      opacity: 0.8;
+      background: none;
+      letter-spacing: normal;
+    }
+    .message-avatar,
+    .message-avatar-spacer {
+      width: 40px;
+      min-width: 40px;
+    }
+    .message-avatar {
+      height: 40px;
+      object-fit: contain;
+      padding-top: 1px;
+    }
+    .message-avatar-spacer {
+      display: flex;
+      align-self: flex-start;
+      align-content: flex-start;
+      justify-content: center;
+      flex-wrap: wrap;
+      .message-time {
+        display: none;
+        text-align: center;
+        overflow: visible;
+        text-wrap-mode: nowrap;
+        margin-top: 2px;
+      }
+    }
+    .message-modern-inner {
+      flex: 1;
+      min-width: 0;
+    }
+    .message-header {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-weight: 600;
+      .user-view {
+        display: inline-flex;
+        align-items: center;
+        text-align-last: justify;
+        text-indent: 0.5px;
+        .user-avatar {
+          display: none;
+        }
+      }
+      .message-post {
+        display: none;
+      }
+    }
+    .message-content {
+      margin-top: 0px;
+      min-width: 0;
+      .bbcode {
+        background: transparent;
+        padding: 0;
+        border-radius: 0;
+        border: none;
+        word-break: break-word;
+      }
+    }
+    &.message-warn,
+    &.message-warn.message-own {
+      //this doesn't look very pretty, but the point is to be obvious, so we'll leave this commented for now
+      //background-color: var(--bs-danger-bg-subtle);
+
+      //I always want the border to be lighter for this, not have it somehow be a theme thing.
+      border-left-color: color.change(mix(#ffffff, $danger, 4 * 8%));
+      .message-time {
+        color: color-contrast($danger);
+      }
+    }
+    &.message-own {
+      border-left-color: $gray-500;
+    }
+    &.message-highlight {
+      border-left-color: $success;
+      background-color: var(--bs-success-bg-subtle);
+    }
+  }
+  .message-highlight {
+    border-left: solid 2px
+      color.change(mix($white, $success, 7.5 * 8%), $saturation: 450);
+  }
+  // ^ Event/bcast messages keep the classic inline rendering even in modern
+  // layout; skip the spacer borders so they match the console's height.
+  .message-block:not(.message-event):not(.message-bcast) {
+    border-top: solid 1px $card-border-color;
+    border-bottom: solid 1px transparent;
+  }
+  .message-blockless:not(.message-event):not(.message-bcast) {
+    border-top: solid 1px transparent;
+    border-bottom: solid 1px transparent;
+  }
+  .last-read {
+    border-bottom: solid 1px mix($white, $success, 4 * 8%);
+  }
+  .message:last-of-type.last-read {
+    border-bottom: solid 1px transparent !important;
+  }
+}
+
+.fas.active {
+  color: theme-color('success');
+}
+
+$genders: (
+  'shemale': #cc66ff,
+  'herm': #9b30ff,
+  'none': $gray-500,
+  'female': #ff6699,
+  'male': #6699ff,
+  'male-herm': #007fff,
+  'transgender': #ee8822,
+  'cunt-boy': #00cc66
+);
+
+@each $gender, $color in $genders {
+  .gender-#{$gender},
+  .gender-icon-#{$gender} {
+    --gender-color: #{$color};
+  }
+
+  .gender-icon-#{$gender},
+  .message-event .gender-icon-#{gender} {
+    color: var(--gender-color);
+  }
+
+  .message-event .gender-#{$gender} {
+    --gender-color: #{color.scale($color, $lightness: 5%)};
+  }
+}
+
+// When user requests vanilla gender colours, force the original palette
+.vanillaGenderColors {
+  @each $gender, $color in $genders {
+    .gender-#{$gender} {
+      --gender-color: #{$color};
+    }
+
+    .message-event .gender-#{$gender} {
+      --gender-color: #{color.scale($color, $lightness: 5%)};
+    }
+  }
+
+  .user-bookmark,
+  .message-event .user-bookmark {
+    color: #66cc33;
+  }
+}
+
+@each $colorName,
+  $colorValue
+    in (
+      'red': $red-color,
+      'blue': $blue-color,
+      'green': $green-color,
+      'yellow': $yellow-color,
+      'cyan': $cyan-color,
+      'purple': $purple-color,
+      'brown': $brown-color,
+      'pink': $pink-color,
+      'gray': $gray-color,
+      'orange': $orange-color,
+      'white': $white-color,
+      'black': $black-color
+    )
+{
+  .#{$colorName}NameText {
+    color: var(--text-color, #{$colorValue});
+  }
+}
+
+.user-bookmark,
+.message-event .user-bookmark {
+  color: $bookmark-color;
+}
+
+#character-page-sidebar {
+  margin-top: 0; // Fix up hack for merging the header on the character page, which doesn't work on chat.
+}
+
+.profile-viewer {
+  width: 98%;
+  max-width: 98%;
+  & > .modal-content {
+    height: 100%;
+  }
+}
+
+#window-tabs {
+  .hasNew {
+    background-color: mix($white, $warning, 2 * 8%);
+    border-color: mix($white, $warning, 4 * 8%);
+    color: color-contrast($warning);
+    &:hover {
+      background-color: mix($white, $warning, 4 * 8%);
+    }
+  }
+  .tab:not(.active):not(:hover) {
+    opacity: 0.5;
+  }
+}
+
+.btn-text {
+  margin-left: 3px;
+  @include media-breakpoint-down(md) {
+    display: none;
+  }
+}
+
+.list-group.conversation-nav .list-group-item {
+  margin: 1px 0px 1px 0px;
+  border-radius: 4px;
+  //@each $color, $value in $theme-colors {
+  //&.list-group-item-#{$color} {
+  //color: color-yiq($value);
+  //}
+  //}
+}
+
+.list-group.channel-group-list,
+.list-group.ungrouped-channels {
+  --bs-border-color: transparent;
+  border: 2px dashed var(--bs-border-color);
+  border-radius: 4px;
+}
+
+.list-group.channel-group-list .list-group-item {
+  margin-left: 8px;
+  width: auto;
+}
+
+.logs-fab {
+  position: absolute;
+  top: 47px;
+  z-index: 10;
+  padding: 12px;
+  left: 50%;
+  margin-left: -20px;
+  border-radius: 100%;
+  line-height: 0;
+  box-shadow: 0 1px 4px #000;
+}
+
+.nav-link {
+  cursor: pointer;
+}

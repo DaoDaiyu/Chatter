@@ -1,0 +1,155 @@
+@use 'sass:color';
+@import 'bootstrap/scss/functions';
+@import '../../functions';
+@import '../variables/dracula_variables';
+@import 'bootstrap/scss/variables';
+@import '../../flist_derived';
+@import '../variables/dracula_derived';
+
+//BBCode colors.
+$red-color: $dracula-red;
+$green-color: $dracula-green;
+$blue-color: #6a9bcf;
+$yellow-color: $dracula-yellow;
+$purple-color: $dracula-purple;
+$cyan-color: $dracula-cyan;
+$white-color: $dracula-foreground;
+$black-color: color.scale($dracula-comment, $lightness: -20%);
+$brown-color: #b89383;
+$pink-color: $dracula-pink;
+$gray-color: $gray-600;
+$orange-color: $dracula-orange;
+
+$bookmark-color: $dracula-yellow;
+// Apply variables to theme.
+@import '../chat';
+
+$genders: (
+  'shemale': $dracula-purple,
+  'herm': color.scale($dracula-purple, $saturation: -0.36%, $lightness: -10.78%),
+  'none': $dracula-comment,
+  'female': $dracula-pink,
+  'male': $dracula-cyan,
+  'male-herm': color.scale(
+      $dracula-cyan,
+      $saturation: -0.45%,
+      $lightness: -36.86%
+    ),
+  'transgender': $dracula-orange,
+  'cunt-boy': $dracula-green
+);
+
+.list-group.conversation-nav
+  .list-group-item-action.item-private.active
+  .online-status {
+  color: color-contrast($primary);
+}
+
+@each $gender, $color in $genders {
+  .gender-#{$gender},
+  .gender-icon-#{$gender} {
+    --gender-color: #{$color};
+  }
+
+  .gender-icon-#{$gender},
+  .message-event .gender-icon-#{gender} {
+    color: var(--gender-color);
+  }
+
+  .message-event .gender-#{$gender} {
+    --gender-color: #{color.scale($color, $lightness: 5%)};
+  }
+}
+
+.message-own:not(.message-warn) {
+  background-color: rgba($gray-200, 0.7);
+}
+
+.colorblindMode {
+  @import '../colorblind';
+  @import '../../rising';
+
+  @each $varName, $value in $risingVariables {
+    --#{$varName}: #{$value};
+  }
+}
+
+.message-highlight {
+  background-color: color.scale($success, $alpha: -80%);
+  .blackText,
+  .blackNameText,
+  .gender-none {
+    color: #b0beea;
+  }
+  .grayText,
+  .grayNameText {
+    color: #c8cbdf;
+  }
+
+  .gender-herm {
+    color: #c7bde8;
+  }
+}
+
+.message-warn {
+  .blueText,
+  .blueNameText,
+  .gender-male {
+    color: #1a5fa1;
+  }
+  .grayText,
+  .grayNameText,
+  .whiteText,
+  .whiteNameText,
+  .blackText,
+  .blackNameText,
+  .gender-none {
+    color: inherit;
+  }
+
+  .pinkText,
+  .pinkNameText,
+  .redText,
+  .redNameText,
+  .gender-female {
+    color: #5f0237;
+  }
+
+  .yellowText,
+  .yellowNameText {
+    color: #6f6406;
+  }
+
+  .orangeText,
+  .orangeNameText,
+  .gender-transgender {
+    color: #833609;
+  }
+
+  .greenText,
+  .greenNameText,
+  .gender-cunt-boy {
+    color: #397849;
+  }
+
+  .brownText,
+  .brownNameText {
+    color: #531b00;
+  }
+
+  .cyanText,
+  .cyanNameText,
+  .gender-male-herm {
+    color: #053e3e;
+  }
+
+  .purpleText,
+  .purpleNameText,
+  .gender-shemale,
+  .gender-herm {
+    color: #5f1ebc;
+  }
+}
+:root {
+  color-scheme: dark;
+}

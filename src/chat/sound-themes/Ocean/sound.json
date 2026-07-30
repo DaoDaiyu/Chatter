@@ -1,0 +1,20 @@
+{
+  "name": "Ocean",
+  "version": "1.0.0",
+  "description": "The Ocean sound theme for Horizon",
+  "author": "The KDE Team",
+  "sounds": {
+    "attention": "Sounds/NewMessage",
+    "chat": "Sounds/Mail",
+    "login": "Sounds/service-login",
+    "logout": "Sounds/service-logout",
+    "modalert": "Sounds/outcome-failure",
+    "newnote": "Sounds/NewNote",
+    "silence": "Sounds/silence",
+    "system": "Sounds/system"
+  },
+  "formats": {
+    "preferred": "wav",
+    "fallback": ["ogg"]
+  }
+}

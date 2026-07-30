@@ -1,0 +1,62 @@
+@import 'bootstrap/scss/functions';
+@import '../../functions';
+@import '../variables/light_variables';
+@import 'bootstrap/scss/variables';
+@import '../../flist_derived';
+@import '../variables/light_derived';
+
+// Apply variables to theme.
+@import '../chat';
+
+.list-group.conversation-nav
+  .list-group-item-action.item-private.active
+  .online-status {
+  color: color-contrast($primary);
+}
+
+.quick-jump-result.selected {
+  color: #fff;
+}
+
+.message-own:not(.message-warn) {
+  background-color: rgba($gray-300, 0.5);
+}
+
+.colorblindMode {
+  @import '../colorblind';
+  @import '../../rising';
+
+  @each $varName, $value in $risingVariables {
+    --#{$varName}: #{$value};
+  }
+}
+
+// Custom muted warning/danger colors
+$warning-bg-subtle-custom: mix($warning, $white, 55%);
+$danger-bg-subtle-custom: mix($danger, $white, 55%);
+
+:root {
+  --bs-warning-bg-subtle: #{$warning-bg-subtle-custom};
+  --bs-danger-bg-subtle: #{$danger-bg-subtle-custom};
+}
+
+@each $color, $value in $theme-colors {
+  .list-group-item-action.list-group-item-#{$color} {
+    color: var(--bs-#{$color}-text-emphasis);
+    background-color: var(--bs-#{$color}-bg-subtle);
+
+    &:hover,
+    &:focus {
+      color: var(--bs-#{$color}-text-emphasis);
+      background-color: color-mix(
+        in srgb,
+        var(--bs-#{$color}-bg-subtle) 95%,
+        $black
+      );
+    }
+  }
+}
+
+:root {
+  color-scheme: light;
+}

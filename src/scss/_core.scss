@@ -1,0 +1,101 @@
+// Forward variables, functions, and mixins for use in this file
+@forward 'abstracts/variables';
+@forward 'abstracts/functions';
+@forward 'abstracts/mixins';
+
+// Define bg-light using theme's light color variable
+.bg-light {
+  background-color: $light !important;
+}
+
+// Form spacing adjustments to match Bootstrap 4 spacing
+.mb-3 {
+  margin-bottom: 1rem !important;
+}
+
+// Remove margin from last form group in card bodies
+.card-body > .mb-3:last-child {
+  margin-bottom: 0 !important;
+}
+
+label:not(.input-group-text) {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.flash-messages-fixed {
+  top: 0px;
+  left: auto;
+  right: auto;
+  width: 100%;
+  height: auto;
+  position: fixed;
+  z-index: 9000;
+}
+
+.flash-message {
+  @extend .alert;
+  position: relative;
+  border-bottom-color: rgba(0, 0, 0, 0.3);
+  margin-bottom: 0;
+  z-index: 150;
+}
+
+.flash-message-enter-active,
+.flash-message-leave-active {
+  transition: all 0.2s;
+}
+
+.flash-message-enter,
+.flash-message-leave-to {
+  opacity: 0;
+  transform: translateX(100px);
+}
+
+.character-menu-item {
+  width: 250px;
+
+  .character-link {
+    display: inline-block;
+    padding-right: 0;
+  }
+
+  .character-edit-link {
+    margin-left: auto;
+    padding: 3px 20px 2px 0;
+    display: inline-block;
+  }
+}
+
+.sidebar-top-padded {
+  margin-top: 20px;
+}
+
+@mixin force-word-wrapping {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+* {
+  min-height: 0;
+  min-width: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.force-reduced-motion {
+  @media (prefers-reduced-motion: no-preference) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0s !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0s !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

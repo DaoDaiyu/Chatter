@@ -1,0 +1,168 @@
+.purpleText,
+.purpleNameText {
+  @include text-outline(#306);
+}
+
+html {
+  body {
+    font-family: 'Verdana', helvetica, 'Arial', 'sans-serif';
+  }
+
+  input.form-control,
+  input.form-control:hover,
+  input.form-control:focus,
+  input.form-control:active {
+    all: unset !important;
+    display: inline-block;
+    background-color: #fff !important;
+    color: #000 !important;
+  }
+}
+
+// i'd prefer to do this with variables, but... like, the rest of this is the same, so...
+// ahhhh who gives a fuck?
+#connect-character-select {
+  --chat-tip-bg: linear-gradient(180deg, #183d64 0%, #102a44 100%);
+  --chat-tip-border: #091a2d;
+  --chat-tip-color: #ffffff;
+  --chat-tip-secondary: rgba(255, 255, 255, 0.85);
+  --chat-tip-button-color: rgba(255, 255, 255, 0.85);
+  --chat-tip-button-hover-color: #ffffff;
+}
+
+.redText,
+.redNameText {
+  color: #f00;
+}
+
+.bbcode-toolbar .color-selector .btn.text-color.red {
+  background-color: #f00;
+}
+
+.blueText,
+.blueNameText {
+  color: #00f;
+}
+
+.bbcode-toolbar .color-selector .btn.text-color.blue {
+  background-color: #00f;
+}
+
+.greenText,
+.greenNameText {
+  color: #0f0;
+}
+
+.bbcode-toolbar .color-selector .btn.text-color.green {
+  background-color: #0f0;
+}
+
+.yellowText,
+.yellowNameText {
+  color: #ff0;
+}
+
+.bbcode-toolbar .color-selector .btn.text-color.yellow {
+  background-color: #ff0;
+}
+
+.cyanText,
+.cyanNameText {
+  color: #0ff;
+}
+.bbcode-toolbar .color-selector .btn.text-color.cyan {
+  background-color: #0ff;
+}
+
+.purpleText,
+.purpleNameText {
+  color: #93f;
+}
+
+.bbcode-toolbar .color-selector .btn.text-color.purple {
+  background-color: #93f;
+}
+
+.brownText,
+.brownNameText {
+  color: #8a6d3b;
+}
+
+.bbcode-toolbar .color-selector .btn.text-color.brown {
+  background-color: #8a6d3b;
+}
+
+.pinkText,
+.pinkNameText {
+  color: #f9c;
+}
+
+.bbcode-toolbar .color-selector .btn.text-color.pink {
+  background-color: #f9c;
+}
+
+.grayText,
+.grayNameText {
+  color: #ccc;
+}
+
+.bbcode-toolbar .color-selector .btn.text-color.gray {
+  background-color: #ccc;
+}
+
+.orangeText {
+  color: #f60;
+}
+.bbcode-toolbar .color-selector .btn.text-color.orange {
+  background-color: #f60;
+}
+
+.whiteText,
+.whiteNameText {
+  color: #fff;
+}
+
+.bbcode-toolbar .color-selector .btn.text-color.white {
+  background-color: #fff;
+}
+
+.blackText,
+.blackNameText {
+  color: #000;
+  @include text-outline($gray-600);
+}
+.bbcode-toolbar .color-selector .btn.text-color.black {
+  background-color: #000;
+}
+* {
+  &::-webkit-scrollbar {
+    display: none; // Hides the custom scrollbar
+  }
+
+  // Optionally, you can also reset the scrollbar track and thumb
+  &::-webkit-scrollbar-track {
+    background: none; // Resets the track to default
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: none; // Resets the thumb to default
+  }
+
+  .hidden-scrollbar {
+    &::-webkit-scrollbar {
+      display: initial; // Hides the custom scrollbar
+      width: 12px;
+    }
+
+    // Optionally, you can also reset the scrollbar track and thumb
+    &::-webkit-scrollbar-track {
+      background: initial; // Resets the track to default
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: initial; // Resets the thumb to default
+    }
+  }
+}
+
+$blue-color: #06f;

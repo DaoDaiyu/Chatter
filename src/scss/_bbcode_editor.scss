@@ -1,0 +1,110 @@
+.bbcode-editor-text-area {
+  textarea {
+    min-height: 150px;
+    &:focus {
+      box-shadow: 0 0 0 ($input-btn-focus-width / 2) $input-btn-focus-color;
+    }
+    resize: none;
+  }
+}
+
+.bbcode-toolbar {
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  @include media-breakpoint-down(md) {
+    background: $text-background-color;
+    padding: 10px;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    border-radius: var(--bs-border-radius);
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+    display: none;
+    .toolbar-buttons {
+      width: 100%;
+    }
+    .btn {
+      margin: 3px;
+      border-radius: $btn-border-radius !important;
+    }
+  }
+  @include media-breakpoint-up(md) {
+    .btn-close {
+      display: none;
+    }
+    .btn {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border: $input-border-width solid $input-border-color;
+      border-bottom: 0;
+    }
+  }
+
+  .color-typing-hint .chip.red {
+    background: var(--textRedColor);
+    color: color-contrast($red-color);
+  }
+  .color-typing-hint .chip.orange {
+    background: var(--textOrangeColor);
+    color: color-contrast($orange-color);
+  }
+  .color-typing-hint .chip.yellow {
+    background: var(--textYellowColor);
+    color: color-contrast($yellow-color);
+  }
+  .color-typing-hint .chip.green {
+    background: var(--textGreenColor);
+    color: color-contrast($green-color);
+  }
+  .color-typing-hint .chip.cyan {
+    background: var(--textCyanColor);
+    color: color-contrast($cyan-color);
+  }
+  .color-typing-hint .chip.purple {
+    background: var(--textPurpleColor);
+    color: color-contrast($purple-color);
+  }
+  .color-typing-hint .chip.blue {
+    background: var(--textBlueColor);
+    color: color-contrast($blue-color);
+  }
+  .color-typing-hint .chip.pink {
+    background: var(--textPinkColor);
+    color: color-contrast($pink-color);
+  }
+  .color-typing-hint .chip.black {
+    background: var(--textBlackColor);
+    color: color-contrast($black-color);
+  }
+  .color-typing-hint .chip.brown {
+    background: var(--textBrownColor);
+    color: color-contrast($brown-color);
+  }
+  .color-typing-hint .chip.white {
+    background: var(--textWhiteColor);
+    color: color-contrast($white);
+  }
+  .color-typing-hint .chip.gray {
+    background: var(--textGrayColor);
+    color: color-contrast($gray-color);
+  }
+}
+
+.bbcode-btn {
+  @include media-breakpoint-up(md) {
+    display: none;
+  }
+}
+
+.bbcode-editor-controls {
+  display: flex;
+  align-items: center;
+  float: right;
+  order: 1;
+  justify-content: flex-end;
+  @include media-breakpoint-down(md) {
+    flex: 1 49%;
+  }
+}

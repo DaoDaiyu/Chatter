@@ -1,0 +1,14 @@
+.vanillaTextColors {
+  .whiteText,
+  .whiteNameText {
+    @include text-outline($gray-600);
+  }
+}
+
+.bbcodeGlow {
+  // Light themes: outline white-coloured BBCode text for glow
+  .whiteText,
+  .whiteNameText {
+    @include text-outline($gray-600);
+  }
+}

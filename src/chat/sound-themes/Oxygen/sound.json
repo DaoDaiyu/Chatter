@@ -1,0 +1,20 @@
+{
+  "name": "Oxygen",
+  "version": "1.0.0",
+  "description": "The Oxygen sound theme for Horizon",
+  "author": "The KDE Team",
+  "sounds": {
+    "attention": "sounds/Oxygen-Im-Irc-Event",
+    "chat": "sounds/Oxygen-Im-New-Mail",
+    "login": "sounds/Oxygen-Im-User-Auth",
+    "logout": "sounds/Oxygen-Im-Error-On-Connection",
+    "modalert": "sounds/Oxygen-Sys-App-Error-Critical",
+    "newnote": "sounds/Oxygen-Window-Shade-Down",
+    "silence": "sounds/silence",
+    "system": "sounds/Oxygen-Window-All-Desktops-Not"
+  },
+  "formats": {
+    "preferred": "ogg",
+    "fallback": []
+  }
+}

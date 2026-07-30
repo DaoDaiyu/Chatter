@@ -1,0 +1,161 @@
+@use 'sass:color';
+@import '../../functions';
+@import 'bootstrap/scss/functions';
+@import '../variables/mars_variables';
+@import 'bootstrap/scss/variables';
+@import '../../flist_derived';
+@import '../variables/default_derived';
+
+$red-color: $mars-red;
+$green-color: $mars-green;
+$blue-color: $mars-blue;
+$yellow-color: $mars-yellow;
+$purple-color: $mars-purple;
+$cyan-color: $mars-cyan;
+$white-color: $black;
+$black-color: #554c86;
+$brown-color: $mars-brown;
+$pink-color: $mars-pink;
+$gray-color: #b3b3b9;
+$orange-color: $mars-orange;
+
+$bookmark-color: color.scale($green-color, $lightness: 20%);
+
+// Apply variables to theme.
+@import '../chat';
+
+body,
+.modal-body {
+  background: #3f2d2c;
+  background: linear-gradient(
+    153deg,
+    rgba(63, 45, 44, 1) 20%,
+    rgba(31, 20, 21, 1) 100%
+  );
+}
+
+.sidebar {
+  --sidebar-alpha: 1;
+  background-color: rgba($body-bg, var(--sidebar-alpha));
+
+  @media (min-width: breakpoint-min(md)) {
+    & {
+      --sidebar-alpha: 0.4;
+    }
+  }
+}
+
+.message-own:not(.message-warn) {
+  background-color: rgba($gray-300, 0.75);
+}
+
+.colorblindMode {
+  @import '../colorblind';
+  @import '../../rising';
+
+  @each $varName, $value in $risingVariables {
+    --#{$varName}: #{$value};
+  }
+}
+
+:root {
+  color-scheme: dark;
+}
+
+$genders: (
+  'shemale': $mars-magenta,
+  'herm': $mars-purple,
+  'none': $black-color,
+  'female': $mars-pink,
+  'male': $mars-blue,
+  'male-herm': $mars-cyan,
+  'transgender': $mars-orange,
+  'cunt-boy': $mars-green
+);
+
+@each $gender, $color in $genders {
+  .gender-#{$gender},
+  .gender-icon-#{$gender} {
+    --gender-color: #{$color};
+  }
+
+  .gender-icon-#{$gender},
+  .message-event .gender-icon-#{gender} {
+    color: var(--gender-color);
+  }
+
+  .message-event .gender-#{$gender} {
+    --gender-color: #{color.scale($color, $lightness: 5%)};
+  }
+}
+
+//Message type overrides (for bad gender/ bbcode color contrasts)
+
+.message-highlight {
+  .blackText,
+  .blackNameText,
+  .gender-none {
+    color: #c0bae3;
+  }
+  .redText,
+  .redNameText {
+    color: #f37f74;
+  }
+  .gender-cunt-boy,
+  .greenText,
+  .greenNameText {
+    color: #76f74d;
+  }
+}
+
+.message-warn:not(.message-modern) {
+  .gender-female,
+  .pinkText,
+  .pinkNameText {
+    color: #8e1137;
+  }
+
+  .gender-male,
+  .blueText,
+  .blueNameText {
+    color: #0b497d;
+  }
+
+  .grayText,
+  .grayNametext {
+    color: #505054;
+  }
+
+  .yellowText,
+  .yellowNameText {
+    color: #756007;
+  }
+
+  .gender-transgender,
+  .orangeText,
+  .orangeNameText {
+    color: #63410b;
+  }
+
+  .gender-male-herm,
+  .cyanText,
+  .cyanNameText {
+    color: #0e4b44;
+  }
+}
+
+//@import "../../util/accecss";
+//
+//@include accecss(
+//  'html body',
+//  false,
+//  false,
+//  tritanopia
+//);
+
+// deuteranomaly
+// protanomaly
+// protanopia
+// deuteranopia
+// tritanomaly
+// tritanopia

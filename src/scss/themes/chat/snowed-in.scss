@@ -1,0 +1,124 @@
+@use 'sass:color';
+@import 'bootstrap/scss/functions';
+@import '../../functions';
+@import '../variables/snowed_variables';
+@import 'bootstrap/scss/variables';
+@import '../../flist_derived';
+@import '../variables/light_derived';
+
+$bookmark-color: color.scale($green-color, $lightness: -20%);
+// Apply variables to theme.
+@import '../chat';
+
+body,
+.modal-body {
+  background: #f7fcfe;
+  background: linear-gradient(
+    138deg,
+    rgba(247, 252, 254, 1) 0%,
+    rgba(232, 249, 250, 1) 50%,
+    rgba(200, 229, 232, 1) 100%
+  );
+}
+
+.list-group.conversation-nav
+  .list-group-item-action.item-private.active
+  .online-status,
+.quick-jump-result.selected {
+  color: color-contrast($primary);
+}
+
+.message-own:not(.message-warn) {
+  background-color: rgba($gray-300, 0.4);
+}
+
+$genders: (
+  'shemale': $purple-color,
+  'herm': #6500ff,
+  'none': $gray-color,
+  'female': $pink-color,
+  'male': $blue-color,
+  'male-herm': $cyan-color,
+  'transgender': $orange-color,
+  'cunt-boy': $green-color
+);
+
+@each $gender, $color in $genders {
+  .gender-#{$gender},
+  .gender-icon-#{$gender} {
+    --gender-color: #{$color};
+  }
+
+  .gender-icon-#{$gender},
+  .message-event .gender-icon-#{gender} {
+    color: var(--gender-color);
+  }
+
+  .message-event .gender-#{$gender} {
+    --gender-color: #{color.scale($color, $lightness: 5%)};
+  }
+}
+
+.colorblindMode {
+  @import '../colorblind';
+  @import '../../rising';
+
+  @each $varName, $value in $risingVariables {
+    --#{$varName}: #{$value};
+  }
+}
+
+// Custom muted warning/danger colors
+$warning-bg-subtle-custom: mix($warning, $white, 55%);
+$danger-bg-subtle-custom: mix($danger, $white, 55%);
+
+.message-warn {
+  .user-view {
+    --gender-color: #030303;
+  }
+  .redText,
+  .redNameText,
+  .pinkText,
+  .pinkNameText,
+  .orangeText,
+  .orangeNameText,
+  .brownText,
+  .brownNameText {
+    color: #030303;
+  }
+}
+
+.message-highlight {
+  &:not(.message-modern) {
+    .whiteText,
+    .whiteNameText {
+      color: #fff;
+    }
+  }
+}
+
+:root {
+  --bs-warning-bg-subtle: #{$warning-bg-subtle-custom};
+  --bs-danger-bg-subtle: #{$danger-bg-subtle-custom};
+}
+
+@each $color, $value in $theme-colors {
+  .list-group-item-action.list-group-item-#{$color} {
+    color: var(--bs-#{$color}-text-emphasis);
+    background-color: var(--bs-#{$color}-bg-subtle);
+
+    &:hover,
+    &:focus {
+      color: var(--bs-#{$color}-text-emphasis);
+      background-color: color-mix(
+        in srgb,
+        var(--bs-#{$color}-bg-subtle) 95%,
+        $black
+      );
+    }
+  }
+}
+
+:root {
+  color-scheme: light;
+}

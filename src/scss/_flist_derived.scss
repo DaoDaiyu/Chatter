@@ -1,0 +1,77 @@
+@use 'sass:color';
+
+// BBcode colors
+$red-color: #f00 !default;
+$green-color: #0f0 !default;
+$blue-color: #00f !default;
+$yellow-color: #ff0 !default;
+$cyan-color: #0ff !default;
+$purple-color: #93f !default;
+$pink-color: #f9c !default;
+$brown-color: #8a6d3b !default;
+$orange-color: #f60 !default;
+// gut these 3 are specifically for dark themes
+$white-color: $gray-800 !default;
+$black-color: color.scale($gray-500, $saturation: -70%) !default;
+$gray-color: $gray-700 !default;
+$collapse-header-bg: $card-bg !default;
+$collapse-border: color.scale($border-color, $lightness: -25%) !default;
+$text-dark: $text-muted !default;
+
+// Character page quick kink comparison
+$quick-compare-active-border: $black-color !default;
+$quick-compare-favorite-bg: mix($white, $info, 6 * 8%) !default;
+$quick-compare-yes-bg: mix($white, $success, 6 * 8%) !default;
+$quick-compare-maybe-bg: mix($white, $warning, 6 * 8%) !default;
+$quick-compare-no-bg: mix($white, $danger, 6 * 8%) !default;
+
+// character page badges
+$character-badge-bg: color.scale($body-bg, $lightness: -10%) !default;
+$character-badge-border: color.scale($border-color, $lightness: -10%) !default;
+$character-badge-subscriber-bg: mix($white, $info, 10 * 8%) !default;
+$character-badge-subscriber-border: mix($white, $info, 9 * 8%) !default;
+
+// Character editor
+$character-list-selected-border: $success !default;
+$character-image-selected-border: $success !default;
+
+// Notes conversation view
+$note-conversation-you-bg: mix($white, $info, 10 * 8%) !default;
+$note-conversation-you-text: mix($black, $info, 6 * 8%) !default;
+$note-conversation-you-border: mix($white, $info, 9 * 8%) !default;
+$note-conversation-them-bg: $card-bg !default;
+$note-conversation-them-text: $body-color !default;
+$note-conversation-them-border: $card-border-color !default;
+
+$modal-bg: $gray-100;
+$modal-inner-bg: $gray-200;
+
+$nav-link-hover-color: $link-color !default;
+
+// General color extensions missing from bootstrap
+$text-background-color: $body-bg !default;
+$text-background-color-disabled: $gray-800 !default;
+$list-group-disabled-color: $gray-500;
+
+.nav-link.disabled {
+  cursor: default;
+}
+
+.custom-select:hover {
+  text-decoration: none;
+  cursor: default;
+}
+
+select {
+  @extend .custom-select;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+a.btn:not(.btn-outline-secondary) {
+  color: $link-color;
+
+  &:hover {
+    color: $link-hover-color;
+  }
+}

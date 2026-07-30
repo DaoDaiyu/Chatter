@@ -1,0 +1,11 @@
+@function theme-color-level($color-name: 'primary', $level: 0) {
+  $color: var(--#{$prefix}#{$color-name});
+  $color-base: white;
+  $level: abs($level);
+
+  @if type-of($color) == 'string' {
+    @return $color;
+  }
+
+  @return color.mix($color-base, $color, $level * $theme-color-interval);
+}

@@ -1,0 +1,13 @@
+// Custom font size + family, driven by CSS custom properties that
+// src/platform/appearance.ts writes to :root at runtime. Kept as real CSS
+// variables (not a SCSS build-time setting) specifically so the user can
+// change this live from the in-app settings UI without a rebuild.
+:root {
+  --horizon-font-scale: 1;
+  --horizon-font-family: inherit;
+}
+
+body {
+  font-size: calc(1rem * var(--horizon-font-scale));
+  font-family: var(--horizon-font-family);
+}

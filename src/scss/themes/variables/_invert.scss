@@ -1,0 +1,75 @@
+@use 'sass:color';
+@use 'sass:map';
+@use 'sass:math';
+
+// Theme color interval
+$theme-color-interval: 8%;
+
+// Bootstrap 5 shade and tint mixins for dark themes
+// In Bootstrap 4, dark themes were not officially supported, so the original version of this function was
+// used to make sure that the auto-tinted components would work in dark themes.
+// While Bootstrap 5 does actually support dark themes, we ported this function instead of using the native support
+// because porting over the dark themes to use Bootstrap 5's new color system would lead to too many visual inconsistencies.
+@function tint-color($color, $weight) {
+  @if type-of($color) == 'string' {
+    @return $color;
+  }
+
+  @return color.mix(black, $color, $weight * 1%);
+}
+
+@function shade-color($color, $weight) {
+  @if type-of($color) == 'string' {
+    @return $color;
+  }
+
+  @return color.mix(white, $color, $weight * 1%);
+}
+
+@function shift-color($color, $weight) {
+  @if type-of($color) == 'string' {
+    @return $color;
+  }
+
+  @return if(
+    $weight > 0,
+    shade-color($color, $weight),
+    tint-color($color, -$weight)
+  );
+}
+
+// Legacy support
+@function lighten($color, $amount) {
+  @if type-of($color) == 'string' {
+    @return $color;
+  }
+
+  @return color.adjust($color, $lightness: -$amount);
+}
+
+@function darken($color, $amount) {
+  @if type-of($color) == 'string' {
+    @return $color;
+  }
+
+  @return color.adjust($color, $lightness: $amount);
+}
+
+// Bootstrap 5 level function
+@function theme-color-level($color-name: 'primary', $level: 0) {
+  $color: var(--#{$prefix}#{$color-name});
+  $color-base: if($level < 0, black, white);
+  $level: abs($level);
+
+  @if type-of($color) == 'string' {
+    @return $color;
+  }
+
+  @return color.mix($color-base, $color, $level * $theme-color-interval);
+}
+
+// Alert and theme settings
+$alert-border-scale: -8%;
+$alert-color-scale: -80%;
+$theme-is-dark: true;
+$prefix: bs-;

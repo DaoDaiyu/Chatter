@@ -1,0 +1,34 @@
+// Global, CSS-only motion polish. These attach to selectors that already
+// exist and already change state (Sidebar.vue's .sidebar-wrapper toggling
+// .open, its .modal-backdrop appearing/disappearing, buttons) — so they
+// take effect with zero component changes.
+//
+// NOT included: per-message enter/exit animation in the conversation view.
+// That needs chat/ConversationView.vue's message v-for wrapped in a Vue
+// <transition-group>, which means editing a 48K untested file directly —
+// left as a follow-up rather than guessing at its structure.
+
+* {
+  transition-duration: 0.18s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Sidebar.vue toggles .body via display:none/block (see scss/_chat.scss),
+// not a transform — display can't be transitioned, so a slide animation
+// needs Sidebar.vue itself changed to always render .body and toggle
+// visibility via transform/opacity instead. Not done here (would change
+// its layout behavior); flagging instead of shipping a CSS rule that
+// silently does nothing against a display:none element.
+
+.modal-backdrop {
+  transition-property: opacity;
+}
+
+button,
+.btn {
+  transition-property: transform, background-color, opacity;
+}
+button:active,
+.btn:active {
+  transform: scale(0.96);
+}

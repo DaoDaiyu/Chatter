@@ -1,0 +1,106 @@
+@use 'sass:color';
+
+$scorePerfectMatchBg: #e467b8;
+$scorePerfectMatchFg: #e467b8;
+$scoreMatchBg: #317bd0;
+$scoreMatchFg: #317bd0;
+$scoreWeakMatchBg: #208601;
+$scoreWeakMatchFg: #208601;
+$scoreWeakMismatchBg: #606060;
+$scoreWeakMismatchFg: #606060;
+$scoreMismatchBg: #ab0000;
+$scoreMismatchFg: #ab0000;
+
+$scoreStandoutMatchBorderColor: #317bd0;
+$scoreStandoutMatchBgColor: rgba(49, 123, 208, 0.47);
+$scoreStandoutWeakMatchBorderColor: rgb(18, 72, 1);
+$scoreStandoutWeakMatchBgColor: rgba(18, 72, 1, 0.4);
+$scoreStandoutNeutralBorderColor: rgba(0, 0, 0, 0);
+$scoreStandoutWeakMismatchBorderColor: #888;
+$scoreStandoutWeakMismatchBgColor: rgba(170, 170, 170, 0);
+$scoreStandoutMismatchBorderColor: #ab0000;
+
+// Palettes tuned for red/green colour vision deficiency: under protanopia and
+// deuteranopia only the blue-yellow axis and lightness survive, so hues drift
+// from the normal-mode palette to keep every pair distinguishable. Validated
+// with a Machado (2009) CVD simulation; any edit must keep a pairwise CIELAB
+// deltaE of at least 17 (dark) / 13 (light) under normal, protan and deutan
+// vision, and stay readable against the theme background.
+$cvd-light-theme: color.lightness($body-bg) > 50%;
+
+$genders: if(
+  $cvd-light-theme,
+  (
+    'shemale': #8b2500,
+    'herm': #6f3ac7,
+    'none': $gray-500,
+    'female': #8e0e56,
+    'male': #0072b2,
+    'male-herm': #123a75,
+    'transgender': #9a6d00,
+    'cunt-boy': #1f6e46
+  ),
+  (
+    'shemale': #f0e442,
+    'herm': #d55e00,
+    'none': $gray-500,
+    'female': #efa8ce,
+    'male': #56b4e9,
+    'male-herm': #2e86d1,
+    'transgender': #e69f00,
+    'cunt-boy': #0ac48a
+  )
+);
+
+@each $gender, $color in $genders {
+  .gender-#{$gender},
+  .gender-icon-#{$gender} {
+    --gender-color: #{$color};
+  }
+
+  .gender-icon-#{$gender} {
+    color: var(--gender-color);
+  }
+
+  .message-event .gender-#{$gender},
+  .message-event .gender-icon-#{$gender} {
+    --gender-color: #{color.scale($color, $lightness: 5%)};
+  }
+}
+
+// Highlights normally derive from the theme's green $success, the hue R/G
+// colour vision deficiency obscures; restyle with a blue tint and amber
+// border so the cue does not rely on the red-green axis.
+$cvd-highlight-tint: if($cvd-light-theme, #0072b2, #2e86d1);
+$cvd-highlight-accent: if($cvd-light-theme, #9a6d00, #e69f00);
+
+.message-highlight {
+  background-color: rgba($cvd-highlight-tint, 0.25);
+
+  .message-time {
+    background-color: rgba($cvd-highlight-tint, 0.4);
+    color: $black;
+  }
+}
+
+.layout-modern .message-highlight {
+  border-left-color: $cvd-highlight-accent;
+}
+
+.layout-modern .message.message-modern.message-highlight {
+  border-left-color: $cvd-highlight-accent;
+  background-color: rgba($cvd-highlight-tint, 0.25);
+}
+
+.last-read {
+  border-bottom-color: $cvd-highlight-tint !important;
+}
+
+.userlist-item.dimmed {
+  opacity: 1 !important;
+}
+
+.userlist-item.dimmed > .user-view::before {
+  content: '\f05e';
+  font-family: 'Font Awesome 7 Free';
+}

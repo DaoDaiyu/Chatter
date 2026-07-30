@@ -1,0 +1,114 @@
+@use 'sass:color';
+
+// Base colors
+$white: #f7fcfe;
+$gray-base: $white;
+$gray-100: color.scale($gray-base, $lightness: -2%);
+$gray-200: color.scale($gray-base, $lightness: -10%, $saturation: -40%);
+$gray-300: color.scale($gray-base, $lightness: -20%, $saturation: -50%);
+$gray-400: color.scale($gray-base, $lightness: -30%, $saturation: -50%);
+$gray-500: color.scale($gray-base, $lightness: -40%, $saturation: -60%);
+$gray-600: color.scale($gray-base, $lightness: -50%, $saturation: -70%);
+$gray-700: color.scale($gray-base, $lightness: -60%, $saturation: -80%);
+$gray-800: color.scale($gray-base, $lightness: -70%, $saturation: -90%);
+$gray-900: color.scale($gray-base, $lightness: -90%, $saturation: -90%);
+$black: #000000 !default;
+
+// Bootstrap 5 contrast colors
+$light-color: $gray-base;
+$dark-color: $black;
+
+$list-group-bg: $white;
+$list-group-hover-bg: $gray-200;
+
+$input-bg: $white;
+$light: color.scale($gray-base, $lightness: -2%);
+
+// Theme colors
+$gray-color: #717c80;
+$white-color: color.scale($gray-400, $saturation: -20%);
+$black-color: #071108;
+$blue-color: #1a54b5;
+$red-color: #e63946;
+$orange-color: #ba5c12;
+$brown-color: #8e443d;
+$cyan-color: #0da2bb;
+$yellow-color: #e0ca3c;
+$pink-color: #c830a2;
+$purple-color: #8e6acc;
+$green-color: #1c9329;
+$primary: #16407e;
+$secondary: $gray-500;
+$warning: $orange-color;
+$danger: $red-color;
+$success: $green-color;
+$info: $blue-color;
+
+// Core page element colors
+$body-bg: $gray-base;
+$link-color: $gray-800;
+$link-hover-color: $black;
+$dropdown-bg: $gray-base;
+$dropdown-divider-bg: $gray-100;
+
+$modal-header-border-color: $gray-200;
+// F-List Rising
+$scorePerfectMatchBg: rgb(0, 173, 173);
+$scorePerfectMatchFg: rgb(29, 154, 154);
+$scoreMatchBg: rgba(0, 180, 0, 0.65);
+$scoreMatchFg: rgba(0, 133, 0, 0.4);
+$scoreWeakMatchBg: rgba(0, 180, 0, 0.22);
+$scoreWeakMatchFg: rgba(0, 133, 0, 0.2);
+$scoreWeakMismatchBg: rgba(227, 189, 0, 0.5);
+$scoreWeakMismatchFg: rgba(192, 160, 0, 0.5);
+$scoreMismatchBg: rgba(192, 0, 0, 0.35);
+$scoreMismatchFg: rgba(148, 0, 0, 0.3);
+$scoreTitleColor: black;
+$scoreMinimizeButtonFg: rgba(255, 255, 255, 0.6);
+$scoreMinimizeButtonBg: rgba(0, 0, 0, 0.1);
+$scoreReportBg: rgba(0, 0, 0, 0.08);
+
+$scoreFadedPerfectMatchBg: adjust-color($scorePerfectMatchBg, $alpha: -0.6);
+$scoreFadedPerfectMatchFg: adjust-color($scorePerfectMatchFg, $alpha: -0.6);
+$scoreFadedMatchBg: adjust-color($scoreMatchBg, $alpha: -0.6);
+$scoreFadedMatchFg: adjust-color($scoreMatchFg, $alpha: -0.6);
+$scoreFadedWeakMatchBg: adjust-color($scoreWeakMatchBg, $alpha: -0.6);
+$scoreFadedWeakMatchFg: adjust-color($scoreWeakMatchFg, $alpha: -0.6);
+$scoreFadedWeakMismatchBg: adjust-color($scoreWeakMismatchBg, $alpha: -0.6);
+$scoreFadedWeakMismatchFg: adjust-color($scoreWeakMismatchFg, $alpha: -0.6);
+$scoreFadedMismatchBg: adjust-color($scoreMismatchBg, $alpha: -0.6);
+$scoreFadedMismatchFg: adjust-color($scoreMismatchFg, $alpha: -0.6);
+
+$scoreStandoutMatchBorderColor: #059e05;
+$scoreStandoutMatchBgColor: rgba(53, 225, 53, 0.4);
+$scoreStandoutWeakMatchBorderColor: #016c01;
+$scoreStandoutWeakMatchBgColor: rgba(85, 191, 85, 0.2);
+$scoreStandoutNeutralBorderColor: #888;
+$scoreStandoutWeakMismatchBorderColor: #c18f02;
+$scoreStandoutWeakMismatchBgColor: rgba(208, 188, 0, 0);
+$scoreStandoutMismatchBorderColor: #a01a1a;
+
+$characterImageWrapperBg: rgba(0, 0, 0, 0.08);
+$characterGuestbookPostBg: rgba(0, 0, 0, 0.08);
+$characterGuestbookPostBorderColor: rgba(0, 0, 0, 0.06);
+$characterGuestbookReplyBg: rgba(0, 0, 0, 0.05);
+$characterGuestbookTimestampFg: rgba(0, 0, 0, 0.4);
+$characterKinkCustomColor: color.adjust(
+  $warning,
+  $lightness: -30%,
+  $saturation: 15%
+);
+$characterKinkCustomBorderColor: rgba(0, 0, 0, 0.1);
+$characterKinkStockColor: #444444;
+$characterKinkStockHighlightedColor: #333333;
+$characterInfotagColor: rgba(0, 0, 0, 0.7);
+
+$messageTimeBgColor: $gray-200;
+$messageTimeFgColor: $gray-900;
+
+$headerBackgroundMaskColor: $light;
+
+$linkForcedColor: $link-color;
+$tabSecondaryFgColor: rgba(0, 0, 0, 0.4);
+
+@import 'theme_level';

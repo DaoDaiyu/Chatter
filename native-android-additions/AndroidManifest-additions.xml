@@ -1,0 +1,14 @@
+<!-- Merge these into android/app/src/main/AndroidManifest.xml -->
+
+<!-- inside <manifest>, alongside existing <uses-permission> tags -->
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+<!-- API 33+ requires this to show the required foreground-service notification -->
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+<!-- inside <application> -->
+<service
+    android:name=".KeepAliveService"
+    android:enabled="true"
+    android:exported="false"
+    android:foregroundServiceType="dataSync" />

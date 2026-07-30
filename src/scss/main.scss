@@ -1,0 +1,41 @@
+// Baked-in global stylesheet for the Capacitor WebView build.
+//
+// Upstream Horizon compiles each theme (themes/chat/*.scss) as its OWN entry
+// file: it prepends that theme's variables before pulling in the shared
+// partials, because those partials (_flist_overrides, _chat, _rising, …)
+// reference theme variables like $scoreReportBg that only exist once a theme
+// is selected. The previous main.scss @import-ed the shared partials with no
+// theme variables defined, so it could never compile.
+//
+// This file mirrors themes/chat/default.scss (the known-good default-theme
+// compile unit) so every variable is defined in the right order, then layers
+// on the mobile-port additions and icon fonts. Runtime theme switching still
+// loads the standalone themes/chat/*.css files; this is just the default look
+// baked into the bundle.
+@import 'functions';
+@import 'bootstrap/scss/functions';
+@import 'themes/variables/default_variables';
+@import 'bootstrap/scss/variables';
+@import 'flist_derived';
+@import 'themes/variables/default_derived';
+
+// Bootstrap components + all shared partials (core, chat, character_page,
+// flist_overrides, rising, …) — see themes/_chat.scss.
+@import 'themes/chat';
+
+// Mobile-port additions (phone/tablet layout, live font scaling, translucent
+// panels, animations). _responsive defines its own breakpoint variables.
+@import 'mobile/theme-panels';
+@import 'mobile/fonts';
+@import 'mobile/responsive';
+@import 'mobile/animations';
+
+// Icon fonts.
+@import '@fortawesome/fontawesome-free/scss/fontawesome';
+@import '@fortawesome/fontawesome-free/scss/solid';
+@import '@fortawesome/fontawesome-free/scss/regular';
+@import '@fortawesome/fontawesome-free/scss/brands';
+
+:root {
+  color-scheme: dark;
+}

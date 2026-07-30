@@ -1,0 +1,71 @@
+// Mobile layout layer for Horizon on Android.
+//
+// Horizon's Sidebar.vue (chat/Sidebar.vue) is already an off-canvas drawer
+// with a backdrop — that pattern is mobile-friendly as-is. What's missing
+// is: sane default widths on phone-sized screens (desktop's saved/dragged
+// width is usually way too wide), touch-safe tap targets, and giving
+// ChatView.vue's #chatView flex row room to stack instead of squeezing
+// three panes into 360px.
+//
+// This is a global CSS layer, not a rewrite of every .vue template — it
+// covers width/spacing/touch-target problems. It does NOT solve every
+// per-component density issue (e.g. very wide tables in Logs.vue or
+// SettingsView.vue) — expect to spot-check individual screens on a real
+// device and add targeted overrides here as you find them.
+
+$mobile-breakpoint: 600px;
+$tablet-breakpoint: 900px;
+
+@mixin mobile {
+  @media (max-width: $mobile-breakpoint) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: ($mobile-breakpoint + 1px)) and (max-width: $tablet-breakpoint) {
+    @content;
+  }
+}
+
+@include mobile {
+  html {
+    // baseline bump — desktop's default text/tap-target sizing is too
+    // small to comfortably hit with a finger. Overridable by the custom
+    // font-size setting (see _fonts.scss), which multiplies this.
+    font-size: 16px;
+  }
+
+  #chatView {
+    flex-direction: column;
+  }
+
+  // Sidebar.vue's drawer, forced to a sane phone width instead of
+  // whatever offsetWidth/drag-resize produced on a desktop session.
+  .sidebar-wrapper .body {
+    width: min(85vw, 340px) !important;
+  }
+
+  // Bootstrap's .btn-xs (used throughout Horizon's toolbar buttons) is
+  // sized for a mouse cursor. 44px is the standard Android minimum
+  // touch-target size.
+  .btn-xs,
+  .expander,
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  // UserList.vue / ConversationView.vue message rows: tighten desktop
+  // padding meant for a wide window.
+  .message,
+  .conversationList-item {
+    padding: 0.5rem !important;
+  }
+}
+
+@include tablet {
+  .sidebar-wrapper .body {
+    width: min(50vw, 400px) !important;
+  }
+}

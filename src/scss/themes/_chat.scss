@@ -1,0 +1,193 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/variables-dark';
+@import 'bootstrap/scss/maps';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/root';
+@import 'bootstrap/scss/reboot';
+@import 'bootstrap/scss/type';
+@import 'bootstrap/scss/images';
+@import 'bootstrap/scss/grid';
+@import 'bootstrap/scss/forms';
+@import 'bootstrap/scss/buttons';
+@import 'bootstrap/scss/transitions';
+@import 'bootstrap/scss/dropdown';
+@import 'bootstrap/scss/button-group';
+@import 'bootstrap/scss/nav';
+@import 'bootstrap/scss/card';
+@import 'bootstrap/scss/pagination';
+@import 'bootstrap/scss/alert';
+@import 'bootstrap/scss/progress';
+@import 'bootstrap/scss/list-group';
+@import 'bootstrap/scss/close';
+@import 'bootstrap/scss/modal';
+@import 'bootstrap/scss/popover';
+@import 'bootstrap/scss/badge';
+@import 'bootstrap/scss/spinners';
+@import 'bootstrap/scss/placeholders';
+@import 'bootstrap/scss/utilities';
+@import 'bootstrap/scss/utilities/api';
+@import 'bootstrap/scss/helpers/color-bg';
+
+@import '../core';
+@import '../chat';
+@import '../character_page';
+@import '../eicons_editor';
+@import '../bbcode_editor';
+@import '../bbcode';
+@import '../flist_overrides';
+@import '../rising';
+
+$selection-bg: $primary;
+$selection-color: color-contrast($primary);
+
+::selection {
+  background-color: $selection-bg;
+  color: $selection-color;
+}
+
+// Color contrast overrides for Bootstrap components
+.list-group-item.active {
+  color: color-contrast($primary);
+}
+
+.list-group-item-action:not(.active):hover,
+.list-group-item-action:not(.active):focus {
+  color: var(--bs-secondary-text-emphasis);
+}
+
+.list-group-item,
+.list-group-item-action {
+  --transition-time: 0.2s;
+  transition:
+    var(--transition-time) background-color,
+    var(--transition-time) color;
+
+  @media (prefers-reduced-motion: reduce) {
+    --transition-time: 0s;
+  }
+}
+
+// Map list-group-action colors to their list-group-item equivalents
+@each $color, $value in $theme-colors {
+  .list-group-item-action.list-group-item-#{$color} {
+    color: var(--bs-#{$color}-text-emphasis);
+    background-color: var(--bs-#{$color}-border-subtle);
+
+    &:hover,
+    &:focus {
+      color: var(--bs-#{$color}-text-emphasis);
+      background-color: color-mix(
+        in srgb,
+        var(--bs-#{$color}-border-subtle) 95%,
+        $black
+      );
+    }
+  }
+}
+
+.list-group-item-danger:not(.active) {
+  &:hover,
+  &:focus {
+    color: color-contrast($danger-bg-subtle);
+  }
+  color: inherit;
+}
+
+.list-group-action.list-group-item {
+  &:hover,
+  &:focus {
+    color: initial;
+  }
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link,
+.quick-jump-result.selected {
+  color: color-contrast($primary);
+}
+
+.btn {
+  @each $color, $value in $theme-colors {
+    &.btn-#{$color} {
+      color: color-contrast($value);
+    }
+  }
+}
+
+.badge {
+  @each $color, $value in $theme-colors {
+    &.text-bg-#{$color} {
+      color: color-contrast($value);
+    }
+  }
+}
+
+.image-preview-wrapper .image-preview-toolbar {
+  background-color: rgba($gray-200, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+:root {
+  --bs-warning-bg-subtle: #{mix($warning, $white, 25%)};
+  @each $varName, $value in $risingVariables {
+    --#{$varName}: #{$value};
+  }
+}
+
+* {
+  &::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 8px var(--bs-border-color);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.8);
+    background-color: $gray-300;
+    &:hover {
+      background-color: $gray-500;
+    }
+
+    &:active {
+      background-color: $gray-700;
+    }
+  }
+
+  .badge-warning {
+    color: black;
+  }
+}
+
+.hidden-scrollbar {
+  overflow-y: scroll;
+  &::-webkit-scrollbar-thumb {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-track {
+    box-shadow: none;
+  }
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+}
+
+.hidden-scrollbar:hover {
+  //This has no purpose, but for some godawful reason the SCSS compilation breaks if we don't put an additional rule here.
+  //If we don't, for some reason this winds up only displaying the thumb once you hover over it.
+  //So I just picked a rule that has 0 impact on anything else.
+  overflow-y: scroll;
+  &::-webkit-scrollbar-thumb {
+    display: block;
+  }
+}

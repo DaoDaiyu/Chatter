@@ -1,0 +1,38 @@
+@import '../../functions';
+@import 'bootstrap/scss/functions';
+@import '../variables/default_variables';
+@import 'bootstrap/scss/variables';
+@import '../../flist_derived';
+@import '../variables/default_derived';
+
+// Apply variables to theme.
+@import '../chat';
+
+.colorblindMode {
+  @import '../colorblind';
+  @import '../../rising';
+
+  @each $varName, $value in $risingVariables {
+    --#{$varName}: #{$value};
+  }
+}
+
+:root {
+  color-scheme: dark;
+}
+
+//@import "../../util/accecss";
+//
+//@include accecss(
+//  'html body',
+//  false,
+//  false,
+//  tritanopia
+//);
+
+// deuteranomaly
+// protanomaly
+// protanopia
+// deuteranopia
+// tritanomaly
+// tritanopia
