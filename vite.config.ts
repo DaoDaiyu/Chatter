@@ -8,6 +8,14 @@ import path from 'path';
 // src/platform/ and README.md.
 export default defineConfig({
   plugins: [vue2()],
+  // A few upstream files read Electron/Node's `process.platform` (to show ⌘ vs
+  // Ctrl in keyboard hints). `process` doesn't exist in a WebView, so a bare
+  // reference throws at load and blanks the app. Statically replace it — this
+  // is always Android here, never macOS. (Vite already handles
+  // process.env.NODE_ENV on its own.)
+  define: {
+    'process.platform': JSON.stringify('android')
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),

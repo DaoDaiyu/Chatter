@@ -10,13 +10,21 @@ export type LocaleKey = keyof typeof enUSJson;
 export type PluralKey = {
   [K in LocaleKey]: K extends `${infer Base}_${PluralSuffix}` ? Base : never;
 }[LocaleKey];
-// Ensure Webpack can resolve dynamic locale filenames (including hyphens)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const localeContext: any = (require as any).context(
-  './locales',
-  false,
-  /\.json$/
-);
+// Locale JSON files, loaded via Vite's import.meta.glob (the ESM equivalent of
+// webpack's require.context — the original `require.context` crashes at load in
+// a browser/WebView bundle since `require` doesn't exist). Eager so switching
+// language is synchronous, matching the old require.context call signature
+// `localeContext('./<code>.json')`.
+const localeModules = import.meta.glob('./locales/*.json', {
+  eager: true
+}) as Record<string, { default: { [k: string]: string } }>;
+
+function localeContext(rel: string): { [k: string]: string } {
+  const key = rel.replace(/^\.\//, './locales/');
+  const mod = localeModules[key];
+  if (mod === undefined) throw new Error(`Locale not found: ${rel}`);
+  return mod.default;
+}
 
 // Reactive state so templates depending on l() update when language changes.
 export const i18nState = Vue.observable({ locale: 'en-US', version: 0 });

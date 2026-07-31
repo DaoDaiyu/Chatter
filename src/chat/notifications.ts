@@ -1,6 +1,16 @@
 import core from './core';
 import { Conversation, Notifications as Interface } from './interfaces';
 import { nativeNotifications } from '../platform/notifications';
+import icNotificationUrl from './assets/ic_notification.png';
+
+// Fallback sound assets, resolved to bundled URLs via Vite (the webpack-style
+// require('./assets/<name>.<ext>') this replaces has no `require` at runtime).
+// Keyed by the same './assets/<name>.<ext>' path the old code requested.
+const soundUrls = import.meta.glob('./assets/*.{mp3,ogg,wav}', {
+  eager: true,
+  query: '?url',
+  import: 'default'
+}) as Record<string, string>;
 
 const SUPPORTED_AUDIO_CODECS: { [key: string]: string } = {
   ogg: 'ogg',
@@ -75,7 +85,7 @@ export default class Notifications implements Interface {
   }
 
   getOptions(conversation: Conversation, body: string, icon: string) {
-    const badge = require(`./assets/ic_notification.png`).default;
+    const badge = icNotificationUrl;
 
     return {
       body,
@@ -205,9 +215,11 @@ export default class Notifications implements Interface {
     // Fallback to default sounds
     for (const [format, extension] of Object.entries(SUPPORTED_AUDIO_CODECS)) {
       try {
+        const url = soundUrls[`./assets/${sound}.${extension}`];
+        if (url === undefined) continue;
         const src = document.createElement('source');
         src.type = `audio/${format}`;
-        src.src = require(`./assets/${sound}.${extension}`).default;
+        src.src = url;
         audio.appendChild(src);
       } catch (error) {
         console.warn(
