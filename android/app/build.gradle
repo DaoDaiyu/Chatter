@@ -3,6 +3,18 @@ apply plugin: 'com.android.application'
 android {
     namespace "moe.horizn.mobile"
     compileSdk rootProject.ext.compileSdkVersion
+    // Stable signing key committed to the repo so every CI build is signed
+    // identically and can update over the previous install. This is a shared
+    // *sideload* key (like Android's public debug key), NOT a Play Store
+    // release key — do not publish to Play with it.
+    signingConfigs {
+        sideload {
+            storeFile file('horizon-sideload.keystore')
+            storePassword 'horizon'
+            keyAlias 'horizon'
+            keyPassword 'horizon'
+        }
+    }
     defaultConfig {
         applicationId "moe.horizn.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -17,9 +29,13 @@ android {
         }
     }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.sideload
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.sideload
         }
     }
 }
