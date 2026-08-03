@@ -58,19 +58,37 @@ function onLogin(payload: LoginPayload): void {
 
 const Root = Vue.extend({
   render(h) {
-    return h('div', [
-      h(ThemeBackground),
-      session.ready
-        ? h(Chat, {
-            props: {
-              ownCharacters: session.characters,
-              defaultCharacter: session.defaultCharacter,
-              version: CLIENT_VERSION
-            }
-          })
-        : h(Login, { on: { login: onLogin } }),
-      h(LockScreen, { ref: 'lockScreen' })
-    ]);
+    return h(
+      'div',
+      {
+        // Keep interactive UI out from under the status bar, navigation bar and
+        // display cutout. Android 15 (targetSdk 35) forces edge-to-edge, so the
+        // WebView fills the whole screen; viewport-fit=cover (index.html) exposes
+        // these insets. ThemeBackground is position:fixed and stays full-bleed
+        // behind this padding, which is what we want.
+        style: {
+          height: '100%',
+          boxSizing: 'border-box',
+          paddingTop: 'env(safe-area-inset-top, 0px)',
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+          paddingLeft: 'env(safe-area-inset-left, 0px)',
+          paddingRight: 'env(safe-area-inset-right, 0px)'
+        }
+      },
+      [
+        h(ThemeBackground),
+        session.ready
+          ? h(Chat, {
+              props: {
+                ownCharacters: session.characters,
+                defaultCharacter: session.defaultCharacter,
+                version: CLIENT_VERSION
+              }
+            })
+          : h(Login, { on: { login: onLogin } }),
+        h(LockScreen, { ref: 'lockScreen' })
+      ]
+    );
   }
 });
 

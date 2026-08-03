@@ -128,10 +128,15 @@
       parseCharacters(raw: unknown): SimpleCharacter[] {
         const out: SimpleCharacter[] = [];
         if (Array.isArray(raw)) {
+          let synthetic = 1;
           for (const c of raw) {
-            if (c && typeof c === 'object' && 'id' in c && 'name' in c) {
+            if (typeof c === 'string') {
+              // getApiTicket without new_character_list returns bare names.
+              // Connecting only needs the name; synthesize an id for the UI.
+              out.push({ id: synthetic++, name: c, deleted: false });
+            } else if (c && typeof c === 'object' && 'name' in c) {
               out.push({
-                id: Number((c as any).id),
+                id: 'id' in c ? Number((c as any).id) : synthetic++,
                 name: String((c as any).name),
                 deleted: false
               });

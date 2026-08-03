@@ -39,3 +39,14 @@
 :root {
   color-scheme: dark;
 }
+
+// Full-height chain for the WebView: the app's layout is height:100% all the
+// way down, so html/body/#app must be 100% for it to fill the screen. The
+// safe-area padding that keeps content off the status bar / cutout is applied
+// to the app root wrapper in main.ts.
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
