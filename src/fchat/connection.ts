@@ -24,7 +24,8 @@ async function queryApi(
 
   return Axios.post(
     `https://www.f-list.net/json/api/${endpoint}`,
-    qs.stringify(data)
+    qs.stringify(data),
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
   );
 }
 
@@ -377,7 +378,8 @@ export default class Connection implements Interfaces.Connection {
           no_friends: true,
           no_bookmarks: true,
           no_characters: true
-        })
+        }),
+        { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
       )
     ).data;
 

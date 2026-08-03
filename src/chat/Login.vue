@@ -81,7 +81,10 @@
               new_character_list: true,
               no_friends: true,
               no_bookmarks: true
-            })
+            }),
+            // Explicit form encoding so CapacitorHttp's native layer serializes
+            // the body correctly (it keys off Content-Type).
+            { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
           );
           const data = res.data as {
             error?: string;
