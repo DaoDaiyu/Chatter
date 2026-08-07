@@ -14,6 +14,9 @@
               class="form-control"
               v-model="account"
               autocomplete="username"
+              autocapitalize="none"
+              autocorrect="off"
+              spellcheck="false"
               :disabled="working"
               required
             />
@@ -28,6 +31,9 @@
               class="form-control"
               v-model="password"
               autocomplete="current-password"
+              autocapitalize="none"
+              autocorrect="off"
+              spellcheck="false"
               :disabled="working"
               required
             />
@@ -76,7 +82,7 @@
           const res = await Axios.post(
             'https://www.f-list.net/json/getApiTicket.php',
             qs.stringify({
-              account: this.account,
+              account: this.account.trim(),
               password: this.password,
               new_character_list: true,
               no_friends: true,
@@ -113,7 +119,7 @@
           );
 
           this.$emit('login', {
-            account: this.account,
+            account: this.account.trim(),
             password: this.password,
             characters,
             defaultCharacter
