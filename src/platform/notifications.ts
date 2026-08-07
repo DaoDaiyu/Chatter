@@ -22,13 +22,29 @@ function idForTag(tag: string): number {
   return id;
 }
 
+// Resolve with `fallback` if `p` doesn't settle within `ms`. Used so a native
+// call that never resolves can't block the caller.
+function withTimeout<T>(p: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return Promise.race([
+    p.catch(() => fallback),
+    new Promise<T>(resolve => setTimeout(() => resolve(fallback), ms))
+  ]);
+}
+
 export const nativeNotifications = {
   isSupported(): boolean {
     return Capacitor.isNativePlatform();
   },
 
   async requestPermission(): Promise<boolean> {
-    const res = await LocalNotifications.requestPermissions();
+    // This runs inside the connection's 'connecting' phase, which the socket
+    // creation awaits — so it must never hang. On Android 13+ the native
+    // permission request can stall; cap it so connecting always proceeds.
+    const res = await withTimeout(
+      LocalNotifications.requestPermissions(),
+      4000,
+      { display: 'denied' as const }
+    );
     return res.display === 'granted';
   },
 
