@@ -22,6 +22,77 @@ import { App as CapacitorApp } from '@capacitor/app';
 (Vue.prototype as any).l = l;
 (Vue.prototype as any).lp = lp;
 
+// On-device debug overlay: surfaces uncaught errors, promise rejections,
+// console.error, and Vue render/lifecycle errors on screen, so failures that
+// otherwise freeze or blank the WebView are visible without USB debugging.
+// TEMPORARY diagnostic — remove once the mobile issues are resolved.
+function setupDebugOverlay(): void {
+  try {
+    const box = document.createElement('div');
+    box.id = 'horizon-debug-overlay';
+    box.style.cssText =
+      'position:fixed;left:0;right:0;bottom:0;max-height:45vh;overflow:auto;' +
+      'z-index:2147483647;background:rgba(140,0,0,.92);color:#fff;' +
+      'font:11px/1.35 monospace;padding:6px;white-space:pre-wrap;' +
+      'padding-bottom:calc(6px + env(safe-area-inset-bottom,0px));';
+    const header = document.createElement('div');
+    header.textContent = 'debug — tap to hide';
+    header.style.cssText = 'font-weight:bold;cursor:pointer;margin-bottom:4px;';
+    header.addEventListener('click', () => (box.style.display = 'none'));
+    box.appendChild(header);
+    const list = document.createElement('div');
+    box.appendChild(list);
+
+    let lastText = '';
+    let lastLine: HTMLDivElement | undefined;
+    let repeat = 0;
+    const add = (msg: string) => {
+      if (!box.isConnected && document.body) document.body.appendChild(box);
+      box.style.display = 'block';
+      if (msg === lastText && lastLine) {
+        repeat++;
+        lastLine.textContent = `${ts()} (x${repeat + 1}) ${msg}`;
+        return;
+      }
+      repeat = 0;
+      lastText = msg;
+      const line = document.createElement('div');
+      line.textContent = `${ts()} ${msg}`;
+      list.appendChild(line);
+      lastLine = line;
+      while (list.childNodes.length > 40) list.removeChild(list.firstChild!);
+    };
+    const ts = () => new Date().toISOString().substr(11, 8);
+    const str = (v: any) =>
+      v instanceof Error ? v.stack || v.message : String(v);
+
+    window.addEventListener('error', e =>
+      add('ERROR: ' + ((e as ErrorEvent).error?.stack || (e as ErrorEvent).message))
+    );
+    window.addEventListener('unhandledrejection', e =>
+      add('REJECT: ' + str((e as PromiseRejectionEvent).reason))
+    );
+    const origError = console.error.bind(console);
+    console.error = (...args: any[]) => {
+      add('console.error: ' + args.map(str).join(' '));
+      origError(...args);
+    };
+    Vue.config.errorHandler = (err, _vm, info) => {
+      add(`VUE[${info}]: ` + str(err));
+      origError(err);
+    };
+
+    if (document.body) document.body.appendChild(box);
+    else
+      window.addEventListener('DOMContentLoaded', () =>
+        document.body.appendChild(box)
+      );
+  } catch {
+    /* overlay must never break the app */
+  }
+}
+setupDebugOverlay();
+
 const CLIENT_NAME = 'Horizon';
 const CLIENT_VERSION = '0.1.0';
 
