@@ -394,7 +394,7 @@
       </div>
       <conversation :reportDialog="$refs['reportDialog']"></conversation>
     </div>
-    <user-list></user-list>
+    <user-list v-if="!isMobile"></user-list>
     <channels ref="channelsDialog"></channels>
     <status-switcher ref="statusDialog"></status-switcher>
     <character-search ref="searchDialog"></character-search>
@@ -535,7 +535,11 @@
         mouseButtonListener: undefined as any as (e: MouseEvent) => void,
         pendingRenameGroupId: null as string | null,
         activeMenuType: 'none' as ContextMenuTypes,
-        ContextMenuTypes: ContextMenuTypes
+        ContextMenuTypes: ContextMenuTypes,
+        // On phones the online user list is not rendered at all (not just
+        // hidden): a populated channel has thousands of members, and building +
+        // reactively updating that many DOM nodes freezes the mobile WebView.
+        isMobile: window.matchMedia('(max-width: 600px)').matches
       };
     },
     computed: {
