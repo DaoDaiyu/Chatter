@@ -1,17 +1,15 @@
 // Mobile layout layer for Horizon on Android.
 //
-// Horizon's Sidebar.vue (chat/Sidebar.vue) is already an off-canvas drawer
-// with a backdrop — that pattern is mobile-friendly as-is. What's missing
-// is: sane default widths on phone-sized screens (desktop's saved/dragged
-// width is usually way too wide), touch-safe tap targets, and giving
-// ChatView.vue's #chatView flex row room to stack instead of squeezing
-// three panes into 360px.
+// The app is a desktop 3-pane chat (#sidebar drawer | #conversation | #user-list).
+// On a phone that layout breaks: the panes fight for ~360px, content spills
+// past the viewport, and fixed overlays (modals, the drawer, menus) render
+// under the status bar / camera cutout because position:fixed ignores the
+// app-root safe-area padding set in main.ts.
 //
-// This is a global CSS layer, not a rewrite of every .vue template — it
-// covers width/spacing/touch-target problems. It does NOT solve every
-// per-component density issue (e.g. very wide tables in Logs.vue or
-// SettingsView.vue) — expect to spot-check individual screens on a real
-// device and add targeted overrides here as you find them.
+// This layer makes the conversation the single primary surface on phones,
+// contains horizontal overflow, and re-applies safe-area insets to the fixed
+// overlays. Per-screen density issues (very wide tables in Logs/Settings) may
+// still need targeted overrides added here as they're found on-device.
 
 $mobile-breakpoint: 600px;
 $tablet-breakpoint: 900px;
@@ -28,27 +26,69 @@ $tablet-breakpoint: 900px;
   }
 }
 
+// Safe-area insets. viewport-fit=cover (index.html) exposes these on Android 15
+// edge-to-edge; they're 0 on devices without a cutout/gesture bar.
+$safe-top: env(safe-area-inset-top, 0px);
+$safe-bottom: env(safe-area-inset-bottom, 0px);
+$safe-left: env(safe-area-inset-left, 0px);
+$safe-right: env(safe-area-inset-right, 0px);
+
 @include mobile {
+  // Baseline bump for finger-sized targets; multiplied by the font-scale
+  // setting (see _fonts.scss). 16px on inputs also stops the WebView from
+  // zooming when a field is focused.
   html {
-    // baseline bump — desktop's default text/tap-target sizing is too
-    // small to comfortably hit with a finger. Overridable by the custom
-    // font-size setting (see _fonts.scss), which multiplies this.
     font-size: 16px;
   }
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
 
+  // Nothing should scroll the page sideways or spill past the viewport width.
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  // Keep the main pane row a row, cap it to the viewport, and let flex children
+  // actually shrink (min-width:0) instead of forcing overflow.
   #chatView {
-    flex-direction: column;
+    flex-direction: row;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  #chatView > * {
+    min-width: 0;
   }
 
-  // Sidebar.vue's drawer, forced to a sane phone width instead of
-  // whatever offsetWidth/drag-resize produced on a desktop session.
-  .sidebar-wrapper .body {
+  // The conversation (messages + input) owns the full width on a phone.
+  #conversation {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  // Online user list is hidden on phones to give the conversation room.
+  // (Follow-up: a header toggle to slide it in as a right-side drawer.)
+  #user-list {
+    display: none !important;
+  }
+
+  // Sidebar drawer: sane phone width, and kept inside the safe area since the
+  // drawer itself is a fixed/absolute overlay.
+  .sidebar-wrapper .body,
+  .sidebar .body {
     width: min(85vw, 340px) !important;
+    box-sizing: border-box;
+    padding-top: $safe-top;
+    padding-bottom: $safe-bottom;
   }
 
-  // Bootstrap's .btn-xs (used throughout Horizon's toolbar buttons) is
-  // sized for a mouse cursor. 44px is the standard Android minimum
-  // touch-target size.
+  // Touch targets: Bootstrap's mouse-sized buttons up to the 44px Android min.
   .btn-xs,
   .expander,
   button {
@@ -56,15 +96,52 @@ $tablet-breakpoint: 900px;
     min-width: 44px;
   }
 
-  // UserList.vue / ConversationView.vue message rows: tighten desktop
-  // padding meant for a wide window.
+  // Tighten desktop row padding meant for a wide window.
   .message,
   .conversationList-item {
     padding: 0.5rem !important;
   }
+
+  // --- Fixed / absolute overlays escape the app-root safe-area padding, so
+  //     inset them here or they slide under the status bar and cutout. ---
+
+  .modal {
+    padding-top: $safe-top !important;
+    padding-bottom: $safe-bottom !important;
+    padding-left: $safe-left !important;
+    padding-right: $safe-right !important;
+  }
+  .modal-dialog {
+    margin: 0.5rem auto;
+    max-width: calc(100vw - #{$safe-left} - #{$safe-right} - 1rem);
+  }
+  .modal-body {
+    max-height: 75vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  // Custom right-click/long-press menu.
+  .context-menu {
+    max-width: calc(100vw - 16px - #{$safe-left} - #{$safe-right});
+  }
+
+  // Bootstrap dropdowns.
+  .dropdown-menu {
+    max-width: calc(100vw - 16px);
+  }
+
+  // Toasts sit at a screen edge — keep them clear of the cutout / gesture bar.
+  .horizon-toast,
+  .toast-container {
+    margin-top: $safe-top;
+    margin-bottom: $safe-bottom;
+    max-width: calc(100vw - 16px);
+  }
 }
 
 @include tablet {
+  // Tablets have room for the user list; just cap the drawer to a sane width.
   .sidebar-wrapper .body {
     width: min(50vw, 400px) !important;
   }
