@@ -1,33 +1,56 @@
-# ChatterEye
-Discord Chat logger. Log every message and attachment that gets sent on discord!
-__ __
+# 継続は力なり — Keizoku
 
-ChatterEye grabs chat messages & attachments from all servers your bot is in and from all of the channels it can see. You can also set it to only read from a server/guild of your choosing and a channel of your choosing in said guild. You can edit this in `config.toml`. Then it sends/Logs all chat messages into chat_logs.db, and saves attachments locally to '/attachments'.
-The database is written in/for sqlite3, so you will need `DB Browser for SQLite` for viewing the databse.
-__ __
+*Consistency is strength.* A quiet, sumi-e (ink-wash) styled **daily habit
+tracker**, built as an installable mobile web app (PWA).
 
+Track a handful of small daily disciplines — the philosophy is *even 5 minutes
+counts*. Tap a day to fill its ink ring, watch per-habit streaks grow, and keep
+the "all four" consistency streak alive as milestone banners bloom.
 
-<br> 
-<br>
+<p align="center">
+  <img src="scripts/preview.png" width="320" alt="App preview" />
+</p>
 
-# Installation
+## Features
+
+- **Four disciplines** — Japanese, Voice Training, Workout, Drawing — each with
+  its own ink color and brush-mantra. (Edit them in `src/data/habits.js`.)
+- **Weekly ink-ring grid** (Mon–Sun) you tap to mark done; swipe weeks with the
+  arrows to review history.
+- **Streaks** — a live per-habit streak plus the "All 4" consistency streak,
+  both forgiving of the in-progress day (you only lose a streak when a full day
+  passes incomplete).
+- **Milestone banners** (1–50 days) that bloom a sakura as you pass them.
+- **Editable daily commitment** note.
+- **Offline-first PWA** — installs to your home screen, works with no network,
+  and stores everything locally in your browser (`localStorage`). No account,
+  no server, no tracking.
+
+## Run it
+
+```bash
+npm install
+npm run dev        # local dev server
+npm run build      # production build into dist/
+npm run preview    # serve the production build
 ```
-git clone https://therealOri/ChatterEye.git
-cd ChatterEye
-pip install -U discord.py
+
+Then open it on your phone and **Add to Home Screen** to install it as an app.
+
+## Deploy (GitHub Pages)
+
+The build is fully static. Build with the repo path as the base and publish
+`dist/`:
+
+```bash
+BASE_PATH=/Chatter/ npm run build
 ```
-__ __
 
-<br>
-<br>
+## Tech
 
-# Databse Viewer 
-You can download it [Here](https://sqlitebrowser.org/).
-#
-![database_image](https://github.com/therealOri/Chatter/assets/45724082/6ccc1f3a-48ce-47f9-b332-e1eaf631295d.png)
-__ __
+React + Vite, `vite-plugin-pwa` for the service worker & manifest. No backend.
+Icons are generated from an inline SVG via `scripts/gen-icons.mjs`.
 
-<br>
+---
 
-# Notice
-I am not responsible or liable on or off platform for the misuse or malicious purpose/applications of this code. Use at your own risk. If you get punished or banned, etc. for using this, that is ALL and FULLY on you. I made this code/project to be a proof of concept to show how easily you can log chat messages using discord bots/python code (pretty spooky right?). And I shall not be punished on discord/platform or off of discord/platform for making this code or for the actions of others/those who do decide to use this code in any way for any reason. This code is not intended to be used, you can or will get banned or get into deeper trouble.
+*Not perfect. Just consistent.*

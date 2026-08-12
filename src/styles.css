@@ -1,0 +1,564 @@
+/* ============================================================
+   継続は力なり — sumi-e habit tracker
+   A quiet, paper-and-ink aesthetic tuned for a phone in portrait.
+   ============================================================ */
+
+:root {
+  --paper: #ede8da;
+  --paper-2: #e6e0cf;
+  --paper-note: #f3efe4;
+  --ink: #26221e;
+  --ink-soft: #6f6858;
+  --ink-faint: #a89f8c;
+  --line: #cfc7b3;
+  --vermilion: #b5402f;
+  --dark: #17150f;
+  --dark-2: #211e16;
+  --gold: #b9986a;
+
+  --serif: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+  --gothic: 'Zen Kaku Gothic New', 'Hiragino Sans', system-ui, sans-serif;
+
+  --maxw: 460px;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--gothic);
+  color: var(--ink);
+  background: #cbc3b0;
+  overscroll-behavior-y: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ---- Layout shell ------------------------------------------ */
+
+.app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+}
+
+.paper {
+  width: 100%;
+  max-width: var(--maxw);
+  min-height: 100vh;
+  min-height: 100dvh;
+  background:
+    radial-gradient(120% 60% at 80% -5%, rgba(255, 255, 255, 0.5), transparent 60%),
+    radial-gradient(90% 40% at -10% 100%, rgba(120, 110, 90, 0.12), transparent 60%),
+    var(--paper);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.25);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Header ------------------------------------------------ */
+
+.header {
+  padding: calc(env(safe-area-inset-top) + 22px) 22px 8px;
+}
+
+.masthead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.maxim h1 {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 40px;
+  line-height: 1;
+  margin: 0;
+  letter-spacing: 2px;
+}
+
+.maxim-en {
+  font-family: var(--gothic);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin: 8px 0 0;
+}
+
+.hanko {
+  font-family: var(--serif);
+  font-weight: 700;
+  color: #f7f1e6;
+  background: var(--vermilion);
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 16px;
+  line-height: 1;
+  width: 34px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  letter-spacing: 2px;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.4);
+  transform: rotate(-2deg);
+  flex-shrink: 0;
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.commitment {
+  margin-top: 18px;
+  background: var(--paper-note);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--vermilion);
+  border-radius: 3px;
+  padding: 10px 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.commitment-label {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 9.5px;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+}
+
+.commitment-text {
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink);
+  line-height: 1.35;
+}
+
+.commitment-edit textarea {
+  width: 100%;
+  border: none;
+  background: transparent;
+  resize: none;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink);
+  line-height: 1.35;
+  outline: none;
+}
+
+/* ---- Week nav ---------------------------------------------- */
+
+.week-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 14px 22px 4px;
+}
+
+.week-nav button {
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  color: var(--ink-soft);
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.week-nav button:disabled {
+  opacity: 0.3;
+}
+
+.week-label {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  min-width: 130px;
+  text-align: center;
+}
+
+/* ---- Habit cards ------------------------------------------- */
+
+.habits {
+  padding: 8px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.habit-card {
+  border-top: 1px solid var(--line);
+  padding: 16px 6px 14px;
+}
+
+.habits .habit-card:first-child {
+  border-top: none;
+}
+
+.habit-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.habit-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--habit);
+  background: color-mix(in srgb, var(--habit) 9%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--habit) 30%, var(--line));
+  flex-shrink: 0;
+}
+
+.habit-names {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  flex: 1;
+}
+
+.habit-jp {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 22px;
+}
+
+.habit-en {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 10px;
+  color: var(--ink-soft);
+  margin-top: 3px;
+}
+
+.habit-goal {
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: var(--habit);
+  align-self: flex-start;
+  padding-top: 3px;
+}
+
+/* week row */
+
+.week-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.day-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.day-label {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--ink-faint);
+}
+
+.ring {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.8px solid var(--ink-faint);
+  background: transparent;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  transition:
+    transform 0.12s ease,
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.ring:active {
+  transform: scale(0.88);
+}
+
+.ring.is-today {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ink) 10%, transparent);
+}
+
+.ring.is-future {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.ring.is-done {
+  border-color: var(--habit);
+  background: color-mix(in srgb, var(--habit) 10%, transparent);
+}
+
+.ring .check {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--habit);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ring.is-done .check {
+  animation: draw 0.35s ease both;
+}
+
+@keyframes draw {
+  from {
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+  }
+  to {
+    stroke-dasharray: 30;
+    stroke-dashoffset: 0;
+  }
+}
+
+.habit-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.mantra {
+  font-family: var(--serif);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.daily-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 9.5px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.foot-sakura {
+  color: var(--habit);
+}
+
+.daily-progress {
+  color: color-mix(in srgb, var(--habit) 55%, var(--ink-faint));
+}
+
+/* ---- Streak bar (dark footer) ------------------------------ */
+
+.streak-bar {
+  margin-top: auto;
+  background: linear-gradient(180deg, var(--dark-2), var(--dark));
+  color: #d8d2c4;
+  padding: 20px 20px calc(env(safe-area-inset-bottom) + 22px);
+}
+
+.streak-top {
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.streak-count {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 92px;
+  text-align: center;
+}
+
+.streak-caption {
+  font-size: 8.5px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #a29a88;
+  line-height: 1.3;
+}
+
+.streak-sub {
+  color: #8a8271;
+}
+
+.streak-number {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 46px;
+  line-height: 1;
+  color: #b3a0d8;
+  margin: 4px 0 2px;
+}
+
+.streak-days {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: #a29a88;
+}
+
+.milestones {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px 4px;
+  align-content: center;
+}
+
+.banner {
+  position: relative;
+  aspect-ratio: 3 / 5;
+  background: #cbc4b3;
+  border-radius: 2px 2px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 3px;
+  clip-path: polygon(0 0, 100% 0, 100% 82%, 50% 100%, 0 82%);
+  opacity: 0.5;
+}
+
+.banner.reached {
+  opacity: 1;
+  background: #efe9db;
+}
+
+.banner.next {
+  outline: 1px dashed rgba(179, 160, 216, 0.7);
+  outline-offset: 1px;
+  opacity: 0.85;
+}
+
+.banner-num {
+  font-size: 9px;
+  font-weight: 700;
+  color: #4a4438;
+}
+
+.banner-flower {
+  display: grid;
+  place-items: center;
+  color: #a58fc9;
+  margin-top: 1px;
+}
+
+.banner-flower svg {
+  width: 11px;
+  height: 11px;
+}
+
+.streak-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.five {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.five-num {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 52px;
+  line-height: 0.8;
+  color: #b3a0d8;
+}
+
+.five-text {
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 15px;
+  line-height: 1.05;
+  color: #e7e1d4;
+}
+
+.five-sub {
+  flex: 1;
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: #a29a88;
+  text-align: right;
+}
+
+.footer-motto {
+  margin: 18px 0 0;
+  text-align: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: #8f8875;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.motto-sakura {
+  color: #7d7561;
+  width: 13px;
+  height: 13px;
+}
+
+/* ---- Larger screens: keep the phone frame, add a ground ---- */
+
+@media (min-width: 520px) {
+  .app {
+    align-items: flex-start;
+    padding: 24px 0;
+  }
+  .paper {
+    min-height: auto;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+}
