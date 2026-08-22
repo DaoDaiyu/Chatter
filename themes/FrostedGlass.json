@@ -1,0 +1,27 @@
+{
+  "name": "Frosted Glass",
+  "description": "Frosted Glass ported to mobile (Bunny/Revenge/Vendetta) — background image with adjustable blur. Original desktop theme by Gibbu.",
+  "authors": [
+    { "name": "Gibbu", "id": "174868361040232448" }
+  ],
+  "spec": 2,
+  "background": {
+    "url": "https://i.imgur.com/oMhGyuG.jpeg",
+    "blur": 5,
+    "alpha": 0.6
+  },
+  "semanticColors": {
+    "BACKGROUND_PRIMARY": ["#00000000", "#00000000"],
+    "BACKGROUND_SECONDARY": ["#00000066", "#00000066"],
+    "BACKGROUND_SECONDARY_ALT": ["#00000066", "#00000066"],
+    "BACKGROUND_TERTIARY": ["#00000099", "#00000099"],
+    "BACKGROUND_ACCENT": ["#00000066", "#00000066"],
+    "BACKGROUND_FLOATING": ["#000000b3", "#000000b3"],
+    "CHAT_BACKGROUND": ["#00000000", "#00000000"],
+    "BACKGROUND_MOBILE_PRIMARY": ["#00000000", "#00000000"],
+    "BACKGROUND_MOBILE_SECONDARY": ["#00000066", "#00000066"],
+    "HEADER_PRIMARY": ["#ffffff", "#ffffff"],
+    "HEADER_SECONDARY": ["#b9bbbe", "#b9bbbe"],
+    "TEXT_LINK": ["#00b0f4", "#00b0f4"]
+  }
+}
